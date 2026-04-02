@@ -14,3 +14,10 @@ Bruno Henrique - 843515
 Felipe Ortiz - 843689
 
 Marcos Kaminski - 843744
+
+
+## Gravações
+
+Explicação do projeto - https://drive.google.com/file/d/15RhNvnfWpiiQsB230tNUZ-LhlUuUunL1/view?usp=sharing
+
+Projeto compilando e rodando - https://drive.google.com/file/d/13JPPF9LDwwzxQg3YFqlxbgiCi42YNdHs/view?usp=sharing
