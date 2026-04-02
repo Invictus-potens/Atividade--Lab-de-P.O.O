@@ -66,8 +66,7 @@ public class TelaLogin extends JFrame {
 
         btnEntrar = new JButton("Entrar");
         btnEntrar.setPreferredSize(new Dimension(100, 32));
-        btnEntrar.setBackground(new Color(0, 140, 0));
-        btnEntrar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnEntrar, new Color(0, 120, 60), Color.WHITE);
         btnEntrar.setFont(new Font("Arial", Font.BOLD, 13));
 
         btnCadastrar = new JButton("Cadastrar");

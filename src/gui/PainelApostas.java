@@ -87,8 +87,7 @@ public class PainelApostas extends JPanel implements TelaPrincipal.Atualizavel {
 
         JButton btnApostar = new JButton("Registrar Aposta");
         btnApostar.setPreferredSize(new Dimension(200, 36));
-        btnApostar.setBackground(new Color(0, 140, 0));
-        btnApostar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnApostar, new Color(0, 140, 0), Color.WHITE);
         btnApostar.setFont(new Font("Arial", Font.BOLD, 13));
         gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.CENTER;

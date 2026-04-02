@@ -43,8 +43,7 @@ public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizav
         formCriar.add(tfNomeCampeonato, gbc);
 
         JButton btnCriar = new JButton("Criar");
-        btnCriar.setBackground(new Color(0, 140, 0));
-        btnCriar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnCriar, new Color(0, 140, 0), Color.WHITE);
         btnCriar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formCriar.add(btnCriar, gbc);
@@ -72,8 +71,7 @@ public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizav
         formAdicionar.add(cbClube, gbc);
 
         JButton btnAdicionar = new JButton("Adicionar");
-        btnAdicionar.setBackground(new Color(0, 100, 200));
-        btnAdicionar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnAdicionar, new Color(0, 100, 200), Color.WHITE);
         btnAdicionar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formAdicionar.add(btnAdicionar, gbc);
