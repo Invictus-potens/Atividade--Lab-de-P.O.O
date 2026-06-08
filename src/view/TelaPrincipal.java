@@ -1,4 +1,4 @@
-package gui;
+package view;
 
 import model.Pessoa;
 import service.SistemaGerenciador;
