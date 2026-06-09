@@ -79,8 +79,7 @@ public class PainelResultados extends JPanel implements TelaPrincipal.Atualizave
 
         JButton btnRegistrar = new JButton("Registrar Resultado e Calcular Pontos");
         btnRegistrar.setPreferredSize(new Dimension(320, 40));
-        btnRegistrar.setBackground(new Color(180, 50, 0));
-        btnRegistrar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnRegistrar, new Color(180, 50, 0), Color.WHITE);
         btnRegistrar.setFont(new Font("Arial", Font.BOLD, 14));
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;

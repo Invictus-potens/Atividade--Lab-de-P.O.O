@@ -44,8 +44,7 @@ public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
         formCriar.add(tfNomeGrupo, gbc);
 
         JButton btnCriar = new JButton("Criar Grupo");
-        btnCriar.setBackground(new Color(0, 140, 0));
-        btnCriar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnCriar, new Color(0, 140, 0), Color.WHITE);
         btnCriar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formCriar.add(btnCriar, gbc);
@@ -68,8 +67,7 @@ public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
         formEntrar.add(cbGruposDisponiveis, gbc);
 
         JButton btnEntrar = new JButton("Entrar no Grupo");
-        btnEntrar.setBackground(new Color(0, 100, 200));
-        btnEntrar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnEntrar, new Color(0, 100, 200), Color.WHITE);
         btnEntrar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formEntrar.add(btnEntrar, gbc);

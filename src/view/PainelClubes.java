@@ -47,8 +47,7 @@ public class PainelClubes extends JPanel implements TelaPrincipal.Atualizavel {
 
         JButton btnCadastrar = new JButton("Cadastrar Clube");
         btnCadastrar.setPreferredSize(new Dimension(180, 34));
-        btnCadastrar.setBackground(new Color(0, 140, 0));
-        btnCadastrar.setForeground(Color.WHITE);
+        EstiloBotao.aplicarPreenchido(btnCadastrar, new Color(0, 140, 0), Color.WHITE);
         btnCadastrar.setFont(new Font("Arial", Font.BOLD, 13));
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
