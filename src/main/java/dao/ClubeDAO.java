@@ -1,6 +1,6 @@
 package dao;
 
-import java.sql.Connection; // Ajuste caso o nome da sua classe modelo seja diferente
+import java.sql.Connection; 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -26,7 +26,7 @@ public class ClubeDAO {
     }
 
     /**
-     * Rotina DML responsável por injetar o estado do objeto no SGBD.
+     * DML responsável por injetar o estado do objeto no SGBD.
      */
     public void cadastrar(Clube clube) {
         String sql = "INSERT INTO clube (nome, cidade) VALUES (?, ?)";
@@ -41,5 +41,29 @@ public class ClubeDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Falha de persistência ao cadastrar clube: " + e.getMessage(), e);
         }
+    }
+
+    public java.util.List<model.Clube> listarAll() {
+        java.util.List<model.Clube> clubes = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM clube";
+
+        try (java.sql.Connection conn = ConnectionFactory.getConnection();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql);
+             java.sql.ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                model.Clube clube = new model.Clube(
+                    rs.getString("nome"),
+                    rs.getString("cidade")
+                );
+                
+                clubes.add(clube);
+            }
+
+        } catch (java.sql.SQLException e) {
+            throw new RuntimeException("Falha ao consultar clubes no banco: " + e.getMessage(), e);
+        }
+
+        return clubes;
     }
 }

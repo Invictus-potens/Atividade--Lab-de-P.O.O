@@ -1,15 +1,16 @@
 package model;
 
-import interfaces.Gerenciavel;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import interfaces.Gerenciavel;
 
 public class GrupoAposta implements Gerenciavel<Usuario> {
 
     private static final int MAX_PARTICIPANTES = 5;
 
+    private int id;
     private String nome;
     private Usuario criador;
     private List<Usuario> participantes;
@@ -49,6 +50,11 @@ public class GrupoAposta implements Gerenciavel<Usuario> {
     public boolean contemParticipante(Usuario usuario) {
         return participantes.contains(usuario);
     }
+
+    public int getId() {
+        return id; }
+    public void setId(int id) { 
+        this.id = id; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }

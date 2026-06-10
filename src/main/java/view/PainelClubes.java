@@ -1,17 +1,34 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+
 import model.Clube;
-import service.SistemaGerenciador;
 
-import javax.swing.*;
-import java.awt.*;
-
-public class PainelClubes extends JPanel implements TelaPrincipal.Atualizavel {
-
-    private final SistemaGerenciador sistema = SistemaGerenciador.getInstance();
+public class PainelClubes extends JPanel {
 
     private JTextField tfNome;
     private JTextField tfCidade;
+    private JButton btnCadastrar; 
     private DefaultListModel<Clube> listModel;
     private JList<Clube> listaClubes;
     private JLabel lblContador;
@@ -20,7 +37,6 @@ public class PainelClubes extends JPanel implements TelaPrincipal.Atualizavel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         initComponents();
-        atualizar();
     }
 
     private void initComponents() {
@@ -45,16 +61,13 @@ public class PainelClubes extends JPanel implements TelaPrincipal.Atualizavel {
         gbc.gridx = 1; gbc.weightx = 1;
         formPanel.add(tfCidade, gbc);
 
-        JButton btnCadastrar = new JButton("Cadastrar Clube");
+        btnCadastrar = new JButton("Cadastrar Clube");
         btnCadastrar.setPreferredSize(new Dimension(180, 34));
         EstiloBotao.aplicarPreenchido(btnCadastrar, new Color(0, 140, 0), Color.WHITE);
         btnCadastrar.setFont(new Font("Arial", Font.BOLD, 13));
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         formPanel.add(btnCadastrar, gbc);
-
-        btnCadastrar.addActionListener(e -> cadastrarClube());
-        tfCidade.addActionListener(e -> cadastrarClube());
 
         add(formPanel, BorderLayout.NORTH);
 
@@ -69,42 +82,40 @@ public class PainelClubes extends JPanel implements TelaPrincipal.Atualizavel {
                 BorderFactory.createEtchedBorder(), "Clubes Cadastrados"));
         add(scrollPane, BorderLayout.CENTER);
 
-        lblContador = new JLabel("Total: 0 clube(s) cadastrado(s)", SwingConstants.RIGHT);
+        lblContador = new JLabel("Total: 0 clubes cadastrados", SwingConstants.RIGHT);
         lblContador.setFont(new Font("Arial", Font.ITALIC, 11));
         lblContador.setForeground(Color.GRAY);
         add(lblContador, BorderLayout.SOUTH);
     }
 
-    private void cadastrarClube() {
-        String nome = tfNome.getText().trim();
-        String cidade = tfCidade.getText().trim();
-
-        if (nome.isEmpty() || cidade.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Preencha o nome e a cidade do clube!",
-                    "Campos Obrigatórios", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        try {
-            sistema.cadastrarClube(nome, cidade);
-            tfNome.setText("");
-            tfCidade.setText("");
-            tfNome.requestFocus();
-            atualizar();
-            JOptionPane.showMessageDialog(this,
-                    "Clube '" + nome + "' cadastrado com sucesso!",
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro ao Cadastrar", JOptionPane.ERROR_MESSAGE);
-        }
+    public String getNome() {
+        return tfNome.getText().trim();
     }
 
-    @Override
-    public void atualizar() {
+    public String getCidade() {
+        return tfCidade.getText().trim();
+    }
+
+    public void limparCampos() {
+        tfNome.setText("");
+        tfCidade.setText("");
+        tfNome.requestFocus();
+    }
+
+    public void addListenerBotao(ActionListener listener) {
+        btnCadastrar.addActionListener(listener);
+        tfCidade.addActionListener(listener); 
+    }
+
+    public void exibirMensagem(String mensagem, String titulo, int tipoMensagem) {
+        JOptionPane.showMessageDialog(this, mensagem, titulo, tipoMensagem);
+    }
+
+    public void atualizarListaClubes(List<Clube> clubes) {
         listModel.clear();
-        sistema.getClubes().forEach(listModel::addElement);
-        lblContador.setText("Total: " + sistema.getClubes().size() + " clube(s) cadastrado(s)");
+        for (Clube c : clubes) {
+            listModel.addElement(c);
+        }
+        lblContador.setText("Total: " + clubes.size() + " clubes cadastrados");
     }
 }

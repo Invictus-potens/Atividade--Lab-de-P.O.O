@@ -10,7 +10,7 @@ public class ConnectionFactory {
     private static final String URL = "jdbc:sqlite:sistema_apostas.db";
 
     /**
-     * Tenta estabelecer e retornar uma conexão ativa com o arquivo sqLite.
+     * Tenta estabelecer e retornar uma conexão com o arquivo sqLite.
      * @return 
      * @throws RuntimeException 
      */

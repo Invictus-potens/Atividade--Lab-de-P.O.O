@@ -2,6 +2,8 @@ package controller;
 
 import service.SistemaGerenciador;
 import view.TelaPrincipal;
+import view.PainelClubes;
+import controller.ClubeCon;
 
 public class TelaPrincipalCon {
     private TelaPrincipal telaPrincipal;
@@ -11,10 +13,12 @@ public class TelaPrincipalCon {
         this.telaPrincipal = telaPrincipal;
         this.sistemaGerenciador = sistemaGerenciador;
         
-        inicializarPaineis();
+        iniciarPaineis();
     }
 
-    private void inicializarPaineis() {
-        // Passo seguinte: ligar cada painel (Clubes, Apostas) ao seu próprio controlador
+    private void iniciarPaineis() {
+        PainelClubes painelClubes = new PainelClubes();
+        ClubeCon clubesCon = new ClubeCon(painelClubes);
+        this.telaPrincipal.addPainel("Clubes", painelClubes);
     }
 }
