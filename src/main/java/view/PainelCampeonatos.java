@@ -1,15 +1,32 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import model.Campeonato;
 import model.Clube;
-import service.SistemaGerenciador;
 
-import javax.swing.*;
-import java.awt.*;
-
-public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizavel {
-
-    private final SistemaGerenciador sistema = SistemaGerenciador.getInstance();
+public class PainelCampeonatos extends JPanel {
 
     private JTextField tfNomeCampeonato;
     private JComboBox<Campeonato> cbCampeonato;
@@ -17,12 +34,13 @@ public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizav
     private DefaultListModel<Campeonato> listModel;
     private JList<Campeonato> listaCampeonatos;
     private JTextArea taDetalhes;
+    private JButton btnCriar;
+    private JButton btnAdicionar;;
 
     public PainelCampeonatos() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         initComponents();
-        atualizar();
     }
 
     private void initComponents() {
@@ -42,12 +60,11 @@ public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizav
         gbc.gridx = 1; gbc.weightx = 1;
         formCriar.add(tfNomeCampeonato, gbc);
 
-        JButton btnCriar = new JButton("Criar");
+        btnCriar = new JButton("Criar");
         EstiloBotao.aplicarPreenchido(btnCriar, new Color(0, 140, 0), Color.WHITE);
         btnCriar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formCriar.add(btnCriar, gbc);
-        btnCriar.addActionListener(e -> criarCampeonato());
 
         northPanel.add(formCriar);
 
@@ -70,12 +87,11 @@ public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizav
         gbc.gridx = 1; gbc.weightx = 1;
         formAdicionar.add(cbClube, gbc);
 
-        JButton btnAdicionar = new JButton("Adicionar");
+        btnAdicionar = new JButton("Adicionar");
         EstiloBotao.aplicarPreenchido(btnAdicionar, new Color(0, 100, 200), Color.WHITE);
         btnAdicionar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formAdicionar.add(btnAdicionar, gbc);
-        btnAdicionar.addActionListener(e -> adicionarClube());
 
         northPanel.add(formAdicionar);
         add(northPanel, BorderLayout.NORTH);
@@ -87,7 +103,6 @@ public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizav
         listaCampeonatos = new JList<>(listModel);
         listaCampeonatos.setFont(new Font("Arial", Font.PLAIN, 13));
         listaCampeonatos.setFixedCellHeight(26);
-        listaCampeonatos.addListSelectionListener(e -> mostrarDetalhes());
 
         JScrollPane scrollLista = new JScrollPane(listaCampeonatos);
         scrollLista.setBorder(BorderFactory.createTitledBorder(
@@ -106,84 +121,60 @@ public class PainelCampeonatos extends JPanel implements TelaPrincipal.Atualizav
         add(splitPane, BorderLayout.CENTER);
     }
 
-    private void criarCampeonato() {
-        String nome = tfNomeCampeonato.getText().trim();
-        if (nome.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Informe o nome do campeonato!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        try {
-            sistema.cadastrarCampeonato(nome);
-            tfNomeCampeonato.setText("");
-            atualizar();
-            JOptionPane.showMessageDialog(this,
-                    "Campeonato '" + nome + "' criado com sucesso!",
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+    public String getNome() {
+        return tfNomeCampeonato.getText().trim();
     }
 
-    private void adicionarClube() {
-        Campeonato camp = (Campeonato) cbCampeonato.getSelectedItem();
-        Clube clube = (Clube) cbClube.getSelectedItem();
-
-        if (camp == null || clube == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Selecione um campeonato e um clube!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        try {
-            sistema.adicionarClubeAoCampeonato(camp, clube);
-            atualizar();
-            mostrarDetalhes();
-            JOptionPane.showMessageDialog(this,
-                    "Clube '" + clube.getNome() + "' adicionado ao campeonato '" + camp.getNome() + "'!",
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+    public Campeonato getCampeonato() {
+        return (Campeonato) cbCampeonato.getSelectedItem();
     }
 
-    private void mostrarDetalhes() {
-        Campeonato camp = listaCampeonatos.getSelectedValue();
-        if (camp == null) {
-            taDetalhes.setText("");
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Campeonato: ").append(camp.getNome()).append("\n");
-        sb.append("-".repeat(40)).append("\n");
-        sb.append("Clubes participantes: ")
-                .append(camp.listar().size()).append(" / ").append(camp.getTamanhoMaximo()).append("\n\n");
-
-        if (camp.listar().isEmpty()) {
-            sb.append("  (nenhum clube adicionado ainda)");
-        } else {
-            for (int i = 0; i < camp.listar().size(); i++) {
-                sb.append("  ").append(i + 1).append(". ").append(camp.listar().get(i)).append("\n");
-            }
-        }
-        taDetalhes.setText(sb.toString());
+    public Clube getClube() {
+        return (Clube) cbClube.getSelectedItem();
     }
 
-    @Override
-    public void atualizar() {
+    public Campeonato getCampeonatoLista() {
+        return listaCampeonatos.getSelectedValue();
+    }
+
+    public void LimparCampos() {
+        tfNomeCampeonato.setText("");
+        tfNomeCampeonato.requestFocus();
+    }
+
+    public void atualizarListaCampeonatos(java.util.List<Campeonato> campeonatos) {
         listModel.clear();
-        sistema.getCampeonatos().forEach(listModel::addElement);
-
-        Campeonato selCamp = (Campeonato) cbCampeonato.getSelectedItem();
         cbCampeonato.removeAllItems();
-        sistema.getCampeonatos().forEach(cbCampeonato::addItem);
-        if (selCamp != null) cbCampeonato.setSelectedItem(selCamp);
+        for (Campeonato c : campeonatos) {
+            listModel.addElement(c);
+            cbCampeonato.addItem(c);
+        }
+    }
 
-        Clube selClube = (Clube) cbClube.getSelectedItem();
+    public void atualizarClubes(List<Clube> clubes) {
         cbClube.removeAllItems();
-        sistema.getClubes().forEach(cbClube::addItem);
-        if (selClube != null) cbClube.setSelectedItem(selClube);
+        for (Clube c : clubes) {
+            cbClube.addItem(c);
+        }
+    }
+
+    public void attDetalhes(String texto) {
+        taDetalhes.setText(texto);
+    }
+
+    public void exibirMensagem(String mensagem, String titulo, int tipo) {
+        JOptionPane.showMessageDialog(this, mensagem, titulo, tipo);
+    }
+
+    public void addListenerbotao(ActionListener listener) {
+        btnCriar.addActionListener(listener);
+    }
+
+    public void addListenerbotaoAdd(ActionListener listener) {
+        btnAdicionar.addActionListener(listener);
+    }
+
+    public void addListenerLista(javax.swing.event.ListSelectionListener listener) {
+        listaCampeonatos.addListSelectionListener(listener);
     }
 }

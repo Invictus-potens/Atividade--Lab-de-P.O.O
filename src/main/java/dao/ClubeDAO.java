@@ -8,7 +8,7 @@ import model.Clube;
 
 public class ClubeDAO {
 
-    public void createTabelSeNaoExistir() {
+    public void createTableSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS clube (" +
                      "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                      "nome TEXT NOT NULL, " +
@@ -56,6 +56,7 @@ public class ClubeDAO {
                     rs.getString("nome"),
                     rs.getString("cidade")
                 );
+                clube.setId(rs.getInt("id"));
                 
                 clubes.add(clube);
             }

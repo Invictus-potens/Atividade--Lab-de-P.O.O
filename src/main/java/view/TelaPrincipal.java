@@ -72,8 +72,6 @@ public class TelaPrincipal extends JFrame {
         tabbedPane.setFont(new Font("Arial", Font.PLAIN, 13));
 
         if (sistema.isAdmin()) {
-            tabbedPane.addTab("Clubes", new PainelClubes());
-            tabbedPane.addTab("Campeonatos", new PainelCampeonatos());
             tabbedPane.addTab("Partidas", new PainelPartidas());
         }
 
@@ -114,5 +112,9 @@ public class TelaPrincipal extends JFrame {
             this.dispose();
             telaAnterior.setVisible(true);
         }
+    }
+
+    public void addPainel (String titulo, javax.swing.JPanel painel) {
+        tabbedPane.addTab(titulo, painel);
     }
 }

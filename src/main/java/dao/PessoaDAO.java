@@ -11,7 +11,7 @@ public class PessoaDAO {
     /**
      * DDL - gerar a tabela física
      */
-    public void createTabelSeNaoExistir() {
+    public void createTableSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS pessoa (" +
                      "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                      "nome TEXT NOT NULL, " +

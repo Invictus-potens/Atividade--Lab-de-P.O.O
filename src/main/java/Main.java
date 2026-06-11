@@ -20,9 +20,10 @@ public class Main {
             }
 
             try {
-                new dao.ClubeDAO().createTabelSeNaoExistir();
-                new dao.PessoaDAO().createTabelSeNaoExistir();
-                new dao.GrupoApostaDAO().createTabelSeNaoExistir();
+                new dao.ClubeDAO().createTableSeNaoExistir();
+                new dao.CampeonatoDAO().createTableSeNaoExistir();
+                new dao.PessoaDAO().createTableSeNaoExistir();
+                new dao.GrupoApostaDAO().createTableSeNaoExistir();
                 System.out.println("SGBD SQLite inicializado com sucesso.");
             } catch (Exception e) {
                 System.err.println("Erro crítico ao inicializar o banco de dados: " + e.getMessage());

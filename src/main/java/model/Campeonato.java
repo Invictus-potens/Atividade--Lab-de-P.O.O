@@ -1,15 +1,16 @@
 package model;
 
-import interfaces.Gerenciavel;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import interfaces.Gerenciavel;
 
 public class Campeonato implements Gerenciavel<Clube> {
 
     private static final int MAX_CLUBES = 8;
 
+    private int id;
     private String nome;
     private List<Clube> clubes;
 
@@ -39,6 +40,11 @@ public class Campeonato implements Gerenciavel<Clube> {
     public int getTamanhoMaximo() {
         return MAX_CLUBES;
     }
+
+    public int getId() { 
+        return id; }
+    public void setId(int id) { 
+        this.id = id; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }

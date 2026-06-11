@@ -8,7 +8,7 @@ import model.GrupoAposta;
 
 public class GrupoApostaDAO {
     
-    public void createTabelSeNaoExistir() {
+    public void createTableSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS grupo_aposta (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "nome TEXT NOT NULL, " +
