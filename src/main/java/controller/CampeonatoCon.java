@@ -32,7 +32,15 @@ public class CampeonatoCon {
                 atualizarDetalhes();
             }
         });
-        this.atualizarListaViewCampeonatos();
+        
+        this.view.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                atualizarListaViewCampeonatos();
+            }
+        });
+
+        this.atualizarListaViewCampeonatos();    
     }
 
     private void processCadastro() {

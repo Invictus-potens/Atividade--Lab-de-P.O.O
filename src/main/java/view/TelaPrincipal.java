@@ -33,7 +33,7 @@ public class TelaPrincipal extends JFrame {
         this.sistema = SistemaGerenciador.getInstance();
         this.pessoaLogada = sistema.getPessoaLogada();
 
-        setTitle("Tigrinho UNA — " + pessoaLogada.getNome() + " [" + pessoaLogada.getTipo() + "]");
+        setTitle("Tigrinho UNA — " + pessoaLogada.getNome() + " [" + pessoaLogada.getRole() + "]");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(950, 680);
         setLocationRelativeTo(null);
@@ -54,7 +54,7 @@ public class TelaPrincipal extends JFrame {
         userPanel.setOpaque(false);
 
         JLabel lblUsuario = new JLabel("Usuário: " + pessoaLogada.getNome()
-                + "  |  Perfil: " + pessoaLogada.getTipo());
+                + "  |  Perfil: " + pessoaLogada.getRole());
         lblUsuario.setForeground(Color.WHITE);
         lblUsuario.setFont(new Font("Arial", Font.PLAIN, 12));
 

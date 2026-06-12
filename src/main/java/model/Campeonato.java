@@ -51,6 +51,6 @@ public class Campeonato implements Gerenciavel<Clube> {
 
     @Override
     public String toString() {
-        return nome + " (" + clubes.size() + "/" + MAX_CLUBES + " clubes)";
+        return nome;
     }
 }

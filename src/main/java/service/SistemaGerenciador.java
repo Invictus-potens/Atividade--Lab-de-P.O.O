@@ -27,7 +27,6 @@ public class SistemaGerenciador {
         grupos = new ArrayList<>();
         apostas = new ArrayList<>();
 
-        pessoas.add(new Administrador("Administrador", "admin", "admin123"));
     }
 
     public static SistemaGerenciador getInstance() {
@@ -35,17 +34,6 @@ public class SistemaGerenciador {
             instance = new SistemaGerenciador();
         }
         return instance;
-    }
-
-    // =========================================================================
-    // AUTENTICAÇÃO
-    // =========================================================================
-
-    public Pessoa login(String login, String senha) {
-        return pessoas.stream()
-                .filter(p -> p.autenticar(login, senha))
-                .findFirst()
-                .orElse(null);
     }
 
     public void logout() {
@@ -64,9 +52,7 @@ public class SistemaGerenciador {
         pessoas.add(new Usuario(nome, login, senha));
     }
 
-    // =========================================================================
     // CLUBES
-    // =========================================================================
 
     public void cadastrarClube(String nome, String cidade) throws Exception {
         if (nome == null || nome.isBlank()) throw new Exception("Nome do clube não pode ser vazio!");
@@ -83,9 +69,7 @@ public class SistemaGerenciador {
         return Collections.unmodifiableList(clubes);
     }
 
-    // =========================================================================
     // CAMPEONATOS
-    // =========================================================================
 
     public void cadastrarCampeonato(String nome) throws Exception {
         if (nome == null || nome.isBlank()) throw new Exception("Nome do campeonato não pode ser vazio!");
@@ -109,9 +93,7 @@ public class SistemaGerenciador {
         return Collections.unmodifiableList(campeonatos);
     }
 
-    // =========================================================================
     // PARTIDAS
-    // =========================================================================
 
     public void cadastrarPartida(Campeonato campeonato, Clube mandante, Clube visitante,
                                   LocalDateTime dataHora) throws Exception {
@@ -144,9 +126,7 @@ public class SistemaGerenciador {
                 .collect(Collectors.toList());
     }
 
-    // =========================================================================
     // GRUPOS DE APOSTA
-    // =========================================================================
 
     public void criarGrupo(String nome, Usuario criador) throws Exception {
         if (nome == null || nome.isBlank()) throw new Exception("Nome do grupo não pode ser vazio!");
@@ -174,9 +154,7 @@ public class SistemaGerenciador {
                 .collect(Collectors.toList());
     }
 
-    // =========================================================================
     // APOSTAS
-    // =========================================================================
 
     public void registrarAposta(Usuario usuario, Partida partida, GrupoAposta grupo,
                                  int golsMandante, int golsVisitante) throws Exception {
@@ -218,9 +196,7 @@ public class SistemaGerenciador {
                 .collect(Collectors.toList());
     }
 
-    // =========================================================================
     // RESULTADOS
-    // =========================================================================
 
     public int registrarResultado(Partida partida, int golsMandante, int golsVisitante) throws Exception {
         if (partida == null) throw new Exception("Selecione uma partida!");
@@ -239,9 +215,7 @@ public class SistemaGerenciador {
         return (int) totalApostasCalculadas;
     }
 
-    // =========================================================================
     // CLASSIFICAÇÃO
-    // =========================================================================
 
     public List<Map.Entry<Usuario, Integer>> getClassificacaoGrupo(GrupoAposta grupo) {
         Map<Usuario, Integer> pontosPorUsuario = new LinkedHashMap<>();
@@ -261,9 +235,7 @@ public class SistemaGerenciador {
         return classificacao;
     }
 
-    // =========================================================================
     // UTILITÁRIOS
-    // =========================================================================
 
     public Pessoa getPessoaLogada() { return pessoaLogada; }
     public void setPessoaLogada(Pessoa pessoaLogada) { this.pessoaLogada = pessoaLogada; }

@@ -72,9 +72,7 @@ public class CampeonatoDAO {
     public java.util.List<model.Clube> listarClubesCampeonatos(int idCampeonato) {
         java.util.List<model.Clube> clubesVinculados = new java.util.ArrayList<>();
         
-        String sql = "SELECT c.id, c.nome, c.cidade FROM clube c" +
-                     "INNER JOIN campeonato_clube cc ON c.id = cc.clube_id" +
-                     "WHERE cc.campeonato_id = ?";
+        String sql = "SELECT clube.id, clube.nome, clube.cidade FROM clube INNER JOIN campeonato_clube ON clube.id = campeonato_clube.clube_id WHERE campeonato_clube.campeonato_id = ?";
 
         try (java.sql.Connection conn = dao.ConnectionFactory.getConnection();
              java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
