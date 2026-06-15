@@ -1,21 +1,23 @@
 package view;
 
-import javax.swing.*;
-
 import java.awt.event.ActionListener;
-import model.Pessoa;
-import service.SistemaGerenciador;
 
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 public class TelaLogin extends JFrame {
     private JTextField txtLogin;
     private JPasswordField txtSenha;
     private JButton btnEntrar;
+    private JButton btnCriarConta;
 
     public TelaLogin() {
         setTitle("Sistema de Apostas - Login");
-        setSize(300, 200);
+        setSize(320, 250);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -39,6 +41,10 @@ public class TelaLogin extends JFrame {
         btnEntrar = new JButton("Entrar");
         btnEntrar.setBounds(100, 110, 100, 25);
         add(btnEntrar);
+
+        btnCriarConta = new JButton("Criar Conta");
+        btnCriarConta.setBounds(100, 150, 100, 25);
+        add(btnCriarConta);
     }
 
     public String getLogin() {
@@ -51,6 +57,10 @@ public class TelaLogin extends JFrame {
 
     public void adicionarListenerBotaoEntrar(ActionListener listener) {
         btnEntrar.addActionListener(listener);
+    }
+
+    public void adicionarListenerBotaoCriarConta(ActionListener listener) {
+        btnCriarConta.addActionListener(listener);
     }
 
     public void exibirMensagem(String mensagem) {

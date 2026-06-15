@@ -24,6 +24,7 @@ public class Main {
                 new dao.CampeonatoDAO().createTableSeNaoExistir();
                 new dao.PessoaDAO().createTableSeNaoExistir();
                 new dao.GrupoApostaDAO().createTableSeNaoExistir();
+                new dao.PartidaDAO().createTableSeNaoExistir();
                 System.out.println("SGBD SQLite inicializado com sucesso.");
             } catch (Exception e) {
                 System.err.println("Erro crítico ao inicializar o banco de dados: " + e.getMessage());

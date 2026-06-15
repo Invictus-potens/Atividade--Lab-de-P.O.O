@@ -7,7 +7,7 @@ public class Partida {
 
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
+    private int id;
     private Clube casa;
     private Clube visitante;
     private LocalDateTime dataHora;
@@ -30,6 +30,14 @@ public class Partida {
 
     public boolean temResultado() {
         return resultado != null;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Clube getCasa() { return casa; }

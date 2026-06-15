@@ -1,19 +1,32 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.Date;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SwingConstants;
+
 import model.Campeonato;
 import model.Clube;
 import model.Partida;
-import service.SistemaGerenciador;
 
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-
-public class PainelPartidas extends JPanel implements TelaPrincipal.Atualizavel {
-
-    private final SistemaGerenciador sistema = SistemaGerenciador.getInstance();
+public class PainelPartidas extends JPanel {
 
     private JComboBox<Campeonato> cbCampeonato;
     private JComboBox<Clube> cbCasa;
@@ -22,12 +35,12 @@ public class PainelPartidas extends JPanel implements TelaPrincipal.Atualizavel 
     private DefaultListModel<Partida> listModel;
     private JList<Partida> listaPartidas;
     private JLabel lblContador;
+    private JButton btnCadastrar;
 
     public PainelPartidas() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         initComponents();
-        atualizar();
     }
 
     private void initComponents() {
@@ -42,7 +55,6 @@ public class PainelPartidas extends JPanel implements TelaPrincipal.Atualizavel 
         form.add(new JLabel("Campeonato:"), gbc);
         cbCampeonato = new JComboBox<>();
         cbCampeonato.setFont(new Font("Arial", Font.PLAIN, 13));
-        cbCampeonato.addActionListener(e -> carregarClubesDoCampeonato());
         gbc.gridx = 1; gbc.weightx = 1;
         form.add(cbCampeonato, gbc);
 
@@ -78,7 +90,6 @@ public class PainelPartidas extends JPanel implements TelaPrincipal.Atualizavel 
         gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         form.add(btnCadastrar, gbc);
-        btnCadastrar.addActionListener(e -> cadastrarPartida());
 
         add(form, BorderLayout.NORTH);
 
@@ -98,58 +109,45 @@ public class PainelPartidas extends JPanel implements TelaPrincipal.Atualizavel 
         add(lblContador, BorderLayout.SOUTH);
     }
 
-    private void carregarClubesDoCampeonato() {
-        Campeonato camp = (Campeonato) cbCampeonato.getSelectedItem();
+    public Campeonato getCampeonatoSelecionado() {
+        return (Campeonato) cbCampeonato.getSelectedItem();
+    }
+
+    public Clube getCasaSelecionado() {
+        return (Clube) cbCasa.getSelectedItem();
+    }
+
+    public Clube getVisitanteSelecionado() {
+        return (Clube) cbVisitante.getSelectedItem();
+    }
+
+    public Date getDataHora() {
+        return (Date) spDataHora.getValue();
+    }
+
+    public void setCampeonato(java.util.List<Campeonato>camps) {
+        cbCampeonato.removeAllItems();
+        camps.forEach(cbCampeonato::addItem);
+    }
+
+    public void setClube(java.util.List<Clube> clubes) {
         cbCasa.removeAllItems();
         cbVisitante.removeAllItems();
-        if (camp != null) {
-            camp.listar().forEach(c -> {
-                cbCasa.addItem(c);
-                cbVisitante.addItem(c);
-            });
-            if (cbVisitante.getItemCount() > 1) {
-                cbVisitante.setSelectedIndex(1);
-            }
-        }
+        clubes.forEach(c -> {
+            cbCasa.addItem(c);
+            cbVisitante.addItem(c);
+        });
     }
 
-    private void cadastrarPartida() {
-        Campeonato camp = (Campeonato) cbCampeonato.getSelectedItem();
-        Clube casa = (Clube) cbCasa.getSelectedItem();
-        Clube visitante = (Clube) cbVisitante.getSelectedItem();
-        Date dataEscolhida = (Date) spDataHora.getValue();
-
-        if (camp == null || casa == null || visitante == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Preencha todos os campos!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        LocalDateTime dataHora = dataEscolhida.toInstant()
-                .atZone(ZoneId.systemDefault()).toLocalDateTime();
-
-        try {
-            sistema.cadastrarPartida(camp, casa, visitante, dataHora);
-            atualizar();
-            JOptionPane.showMessageDialog(this,
-                    "Partida cadastrada: " + casa.getNome() + " vs " + visitante.getNome(),
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+    public void exibirMensagem(String msg, String titulo, int tipo) {
+        JOptionPane.showMessageDialog(this, msg, titulo, tipo);
     }
 
-    @Override
-    public void atualizar() {
-        Campeonato selCamp = (Campeonato) cbCampeonato.getSelectedItem();
-        cbCampeonato.removeAllItems();
-        sistema.getCampeonatos().forEach(cbCampeonato::addItem);
-        if (selCamp != null) cbCampeonato.setSelectedItem(selCamp);
-        else carregarClubesDoCampeonato();
+    public void addListenerBtnCadastrar(java.awt.event.ActionListener l) {
+        btnCadastrar.addActionListener(l);
+    }
 
-        listModel.clear();
-        sistema.getPartidas().forEach(listModel::addElement);
-        lblContador.setText("Total: " + sistema.getPartidas().size() + " partida(s)");
+    public void addListenerCbCampeonato(java.awt.event.ActionListener l) {
+        cbCampeonato.addActionListener(l);
     }
 }

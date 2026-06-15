@@ -4,6 +4,7 @@ import model.Pessoa;
 import service.SistemaGerenciador;
 import view.TelaLogin;
 import view.TelaPrincipal;
+import view.TelaCadastro;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +23,16 @@ public class LoginController {
         this.pessoaDao = new PessoaDAO();
 
         this.telaLogin.adicionarListenerBotaoEntrar(new LoginListener());
+        this.telaLogin.adicionarListenerBotaoCriarConta(e -> abrirTelaCadastro());
+    }
+    
+    private void abrirTelaCadastro() {
+        this.telaLogin.setVisible(false);
+
+        view.TelaCadastro telaCadastro = new view.TelaCadastro();
+        CadastroCon cadastroCon = new CadastroCon(telaCadastro, this.telaLogin);
+
+        telaCadastro.setVisible(true);
     }
 
     class LoginListener implements ActionListener {
@@ -44,7 +55,7 @@ public class LoginController {
                     telaLogin.dispose();
 
                     TelaPrincipal telaPrincipal = new TelaPrincipal(telaLogin);
-                    TelaPrincipalCon principalController = new TelaPrincipalCon(telaPrincipal, sistemaGerenciador);
+                    TelaPrincipalCon principalCon = new TelaPrincipalCon(telaPrincipal, sistemaGerenciador);
                     telaPrincipal.setVisible(true);
                 } else {
                     telaLogin.exibirMensagem("Login ou senha incorreto.");

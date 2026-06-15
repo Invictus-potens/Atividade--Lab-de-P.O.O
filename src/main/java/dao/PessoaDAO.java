@@ -6,9 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.management.RuntimeErrorException;
-
-import model.Administrador;
 import model.Pessoa;
 
 public class PessoaDAO {
@@ -81,7 +78,7 @@ public class PessoaDAO {
                         userAutenticado.setNome(rs.getString("nome"));
                         userAutenticado.setLogin(rs.getString("login"));
                         userAutenticado.setSenha(rs.getString("senha"));
-                        userAutenticado.setRole(("role"));
+                        userAutenticado.setRole((role));
 
                         return userAutenticado;
                     }
@@ -93,7 +90,7 @@ public class PessoaDAO {
     }
 
     public void cadastrarP(Pessoa pessoa) {
-        String sql = "INSERT INTO pessoa (nome, login, senha) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO pessoa (nome, login, senha, role) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -6,9 +6,10 @@ import java.sql.SQLException;
 
 import model.Campeonato;
 import model.Clube;
+
 public class CampeonatoDAO {
 
-    //DDL
+    //DDL criar tabela e nova table de campeonato_clube
 
     public void createTableSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS Campeonato (" +
@@ -67,7 +68,7 @@ public class CampeonatoDAO {
         }
     }
 
-    //DQL Inner join
+    //DQL Inner join paraclube_campeonato
 
     public java.util.List<model.Clube> listarClubesCampeonatos(int idCampeonato) {
         java.util.List<model.Clube> clubesVinculados = new java.util.ArrayList<>();
