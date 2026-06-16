@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import model.Pessoa;
-import service.SistemaGerenciador;
 
 public class TelaPrincipal extends JFrame {
 
@@ -24,14 +23,16 @@ public class TelaPrincipal extends JFrame {
     }
 
     private final JFrame telaAnterior;
-    private final SistemaGerenciador sistema;
     private final Pessoa pessoaLogada;
     private JTabbedPane tabbedPane;
 
-    public TelaPrincipal(JFrame telaAnterior) {
+    private PainelPartidas painelPartidas;
+    private PainelCampeonatos painelCampeonatos;
+    private PainelClubes painelClubes;
+
+    public TelaPrincipal(JFrame telaAnterior, Pessoa pessoaLogada) {
         this.telaAnterior = telaAnterior;
-        this.sistema = SistemaGerenciador.getInstance();
-        this.pessoaLogada = sistema.getPessoaLogada();
+        this.pessoaLogada = pessoaLogada;
 
         setTitle("Tigrinho UNA — " + pessoaLogada.getNome() + " [" + pessoaLogada.getRole() + "]");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,18 +72,19 @@ public class TelaPrincipal extends JFrame {
         tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         tabbedPane.setFont(new Font("Arial", Font.PLAIN, 13));
 
-        if (sistema.isAdmin()) {
-            tabbedPane.addTab("Partidas", new PainelPartidas());
+        
+        boolean isAdmin = pessoaLogada.getRole().equals("Administrador") || pessoaLogada.getRole().equals("Administrator");
+
+        if (isAdmin) {
+            this.painelPartidas = new PainelPartidas();
+            tabbedPane.addTab("Partidas", painelPartidas);
+            this.painelCampeonatos = new PainelCampeonatos();
+            tabbedPane.addTab("Campeonatos", painelCampeonatos);
+            this.painelClubes = new PainelClubes();
+            tabbedPane.addTab("Clubes", painelClubes);
+
+            //tabbedPane.addTab("Resultados", new PainelResultados());
         }
-
-        tabbedPane.addTab("Grupos", new PainelGrupos());
-        tabbedPane.addTab("Apostas", new PainelApostas());
-
-        if (sistema.isAdmin()) {
-            tabbedPane.addTab("Resultados", new PainelResultados());
-        }
-
-        tabbedPane.addTab("Classificação", new PainelClassificacao());
 
         tabbedPane.addChangeListener(e -> {
             Component painel = tabbedPane.getSelectedComponent();
@@ -94,9 +96,9 @@ public class TelaPrincipal extends JFrame {
         add(tabbedPane, BorderLayout.CENTER);
 
         JPanel statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        statusBar.setBackground(new Color(240, 240, 240));
+        statusBar.setBackground(new Color(254, 254, 254));
         statusBar.setBorder(BorderFactory.createEtchedBorder());
-        JLabel lblStatus = new JLabel("  Sistema Tigrinho UNA — Laboratório de P.O.O");
+        JLabel lblStatus = new JLabel(" SistemaTigrinho UNA - Lab P.O.O");
         lblStatus.setFont(new Font("Arial", Font.ITALIC, 11));
         lblStatus.setForeground(Color.GRAY);
         statusBar.add(lblStatus);
@@ -108,13 +110,20 @@ public class TelaPrincipal extends JFrame {
                 "Deseja realmente sair do sistema?",
                 "Confirmação", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            sistema.logout();
             this.dispose();
             telaAnterior.setVisible(true);
         }
     }
 
-    public void addPainel (String titulo, javax.swing.JPanel painel) {
-        tabbedPane.addTab(titulo, painel);
+    public PainelPartidas getPainelPartidas() {
+        return painelPartidas;
+    }
+
+    public PainelCampeonatos getPainelCampeonatos() {
+        return painelCampeonatos;
+    }
+
+    public PainelClubes getPainelClubes() {
+        return painelClubes;
     }
 }

@@ -8,8 +8,11 @@ C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\interfaces\Pontuav
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\model\ResultadoPartida.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\service\SistemaGerenciador.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\controller\LoginController.java
+C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\view\TelaCadastro.java
+C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\controller\PartidaCon.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\model\Usuario.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\view\TelaPrincipal.java
+C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\dao\PartidaDAO.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\controller\ClubeCon.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\dao\GrupoApostaDAO.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\view\PainelClubes.java
@@ -25,6 +28,7 @@ C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\dao\CampeonatoDAO.
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\model\Aposta.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\controller\TelaPrincipalCon.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\dao\ClubeDAO.java
+C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\controller\CadastroCon.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\controller\CampeonatoCon.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\dao\ConnectionFactory.java
 C:\Users\felip\Downloads\VScode\tigrinho-unaerp\src\main\java\view\PainelPartidas.java

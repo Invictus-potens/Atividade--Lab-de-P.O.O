@@ -1,25 +1,20 @@
 package controller;
 
-import model.Pessoa;
-import service.SistemaGerenciador;
-import view.TelaLogin;
-import view.TelaPrincipal;
-import view.TelaCadastro;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import dao.PessoaDAO;
+import model.Pessoa;
+import view.TelaLogin;
+import view.TelaPrincipal;
 
 public class LoginController {
 
     private TelaLogin telaLogin;
-    private SistemaGerenciador sistemaGerenciador;
     private PessoaDAO pessoaDao;
 
-    public LoginController(TelaLogin telaLogin, SistemaGerenciador sistemaGerenciador) {
+    public LoginController(TelaLogin telaLogin) {
         this.telaLogin = telaLogin;
-        this.sistemaGerenciador = sistemaGerenciador;
         this.pessoaDao = new PessoaDAO();
 
         this.telaLogin.adicionarListenerBotaoEntrar(new LoginListener());
@@ -50,18 +45,18 @@ public class LoginController {
                 Pessoa userAutenticado = pessoaDao.autenticar(loginDigitado, senhaDigitada);
 
                 if (userAutenticado != null) {
-                    sistemaGerenciador.setPessoaLogada(userAutenticado);
                     telaLogin.exibirMensagem("Bem-vindo, " + userAutenticado.getNome());
                     telaLogin.dispose();
 
-                    TelaPrincipal telaPrincipal = new TelaPrincipal(telaLogin);
-                    TelaPrincipalCon principalCon = new TelaPrincipalCon(telaPrincipal, sistemaGerenciador);
+                    TelaPrincipal telaPrincipal = new TelaPrincipal(telaLogin, userAutenticado);
+                    TelaPrincipalCon principalCon = new TelaPrincipalCon(telaPrincipal);
                     telaPrincipal.setVisible(true);
                 } else {
                     telaLogin.exibirMensagem("Login ou senha incorreto.");
                 }
 
             } catch (Exception ex) {
+                ex.printStackTrace(); //deixar para saber onde foi o erro
                 telaLogin.exibirMensagem("Erro com banco login: " + ex.getMessage());
             }
         }

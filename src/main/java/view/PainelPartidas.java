@@ -83,7 +83,7 @@ public class PainelPartidas extends JPanel {
         gbc.gridx = 1; gbc.weightx = 1;
         form.add(spDataHora, gbc);
 
-        JButton btnCadastrar = new JButton("Cadastrar Partida");
+        btnCadastrar = new JButton("Cadastrar Partida");
         btnCadastrar.setPreferredSize(new Dimension(200, 34));
         EstiloBotao.aplicarPreenchido(btnCadastrar, new Color(0, 140, 0), Color.WHITE);
         btnCadastrar.setFont(new Font("Arial", Font.BOLD, 13));
@@ -103,7 +103,7 @@ public class PainelPartidas extends JPanel {
                 BorderFactory.createEtchedBorder(), "Partidas Cadastradas"));
         add(scrollPane, BorderLayout.CENTER);
 
-        lblContador = new JLabel("", SwingConstants.RIGHT);
+        lblContador = new JLabel("Total: 0 Partidas", SwingConstants.RIGHT);
         lblContador.setFont(new Font("Arial", Font.ITALIC, 11));
         lblContador.setForeground(Color.GRAY);
         add(lblContador, BorderLayout.SOUTH);

@@ -13,16 +13,16 @@ public class PartidaDAO {
 
     public void createTableSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS partida (" +
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT " +
-                        "campeonato_id INTEGER NOT NULL" +
-                        "casa_id INTEGER NOT NULL" +
-                        "visitante_id INTEGER NOT NULL" +
-                        "data_hora TEXT NOT NULL" +
-                        "gols_casa INTEGER" +
-                        "gols_visitante INTEGER" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "campeonato_id INTEGER NOT NULL, " +
+                        "casa_id INTEGER NOT NULL, " +
+                        "visitante_id INTEGER NOT NULL, " +
+                        "data_hora TEXT NOT NULL, " +
+                        "gols_casa INTEGER, " +
+                        "gols_visitante INTEGER, " +
                         "FOREIGN KEY(campeonato_id) REFERENCES Campeonato(id), " +
                         "FOREIGN KEY(casa_id) REFERENCES clube(id), " +
-                        "FOREIGN KEY(visitante_id) REFERENCES clube(id), " +
+                        "FOREIGN KEY(visitante_id) REFERENCES clube(id) " +
                         ");";
 
         try (Connection conn = ConnectionFactory.getConnection();
