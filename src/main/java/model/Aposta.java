@@ -4,6 +4,7 @@ import interfaces.Pontuavel;
 
 public class Aposta implements Pontuavel {
 
+    private int id;
     private Usuario usuario;
     private Partida partida;
     private GrupoAposta grupo;
@@ -62,9 +63,17 @@ public class Aposta implements Pontuavel {
         this.golsCasaApostado = golsCasaApostado;
     }
 
-    public int getGolsVisitanteApostado() { return golsVisitanteApostado; }
-    public void setGolsVisitanteApostado(int golsVisitanteApostado) {
-        this.golsVisitanteApostado = golsVisitanteApostado;
+    public int getGolsVisitante() { return golsVisitanteApostado; }
+    public void setGolsVisitante(int golsVisitante) {
+        this.golsVisitanteApostado = golsVisitante;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

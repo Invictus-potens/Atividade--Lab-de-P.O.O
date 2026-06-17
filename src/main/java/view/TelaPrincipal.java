@@ -27,6 +27,7 @@ public class TelaPrincipal extends JFrame {
     private JTabbedPane tabbedPane;
 
     private PainelPartidas painelPartidas;
+    private PainelResultados painelResultados;
     private PainelCampeonatos painelCampeonatos;
     private PainelClubes painelClubes;
     private PainelApostas painelApostas;
@@ -87,8 +88,8 @@ public class TelaPrincipal extends JFrame {
             tabbedPane.addTab("Grupos", new PainelGrupos());
             this.painelApostas = new PainelApostas();
             tabbedPane.addTab("Apostas", painelApostas);
-
-            //tabbedPane.addTab("Resultados", new PainelResultados());
+            this.painelResultados = new PainelResultados();
+            tabbedPane.addTab("Resultados", new PainelResultados());
         }
 
         tabbedPane.addChangeListener(e -> {
@@ -142,5 +143,9 @@ public class TelaPrincipal extends JFrame {
 
     public Pessoa getPessoaLogada() {
         return pessoaLogada;
+    }
+
+    public PainelResultados getPainelResultados() {
+        return painelResultados;
     }
 }

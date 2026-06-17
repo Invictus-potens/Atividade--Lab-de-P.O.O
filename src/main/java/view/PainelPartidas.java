@@ -139,6 +139,14 @@ public class PainelPartidas extends JPanel {
         });
     }
 
+    public void atualizarListaPartidas(java.util.List<Partida> partidas) {
+        listModel.clear();
+        for (Partida p : partidas) {
+            listModel.addElement(p);
+        }
+        lblContador.setText("Total: " + partidas.size() + " Partidas");
+    }
+
     public void exibirMensagem(String msg, String titulo, int tipo) {
         JOptionPane.showMessageDialog(this, msg, titulo, tipo);
     }

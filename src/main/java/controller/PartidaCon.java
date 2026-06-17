@@ -50,6 +50,8 @@ public class PartidaCon {
         try {
             List<Campeonato> campeonatos = campeonatoDao.listarAll();
             view.setCampeonato(campeonatos);
+
+            atualizarClubesC();
         } catch (Exception e) {
             view.exibirMensagem("Erro ao listar campeonatos" + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
         }
@@ -64,6 +66,15 @@ public class PartidaCon {
             } catch (Exception e) {
                 view.exibirMensagem("Erro ao listar clubes" + e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
             }
+        }
+    }
+
+    private void atualizarListaPartidas() {
+        try {
+            List<Partida> todasPartidas = partidaDao.listarTodas();
+            view.atualizarListaPartidas(todasPartidas);
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar lista partidas: " + e.getMessage());
         }
     }
 
@@ -91,6 +102,7 @@ public class PartidaCon {
             partidaDao.cadastrar(novaPartida);
             view.exibirMensagem("Partida criada no banco", "Sucesso", JOptionPane.INFORMATION_MESSAGE); 
             atualizarCampeonatos();
+            atualizarListaPartidas();
         } catch (Exception ex) {
             view.exibirMensagem("Erro na partida", "Erro", JOptionPane.WARNING_MESSAGE);
         }

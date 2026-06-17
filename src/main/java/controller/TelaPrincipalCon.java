@@ -32,6 +32,10 @@ public class TelaPrincipalCon {
             new ApostaCon(this.telaPrincipal.getPainelApostas(), this.telaPrincipal.getPessoaLogada());
         }
 
+        if (this.telaPrincipal.getPainelResultados() != null) {
+            new ResultadoCon(this.telaPrincipal.getPainelResultados());
+        }
+
         if (this.telaPrincipal.getPainelGrupos() != null) {
             GrupoCon grupoC = new GrupoCon(this.telaPrincipal.getPainelGrupos(), this.telaPrincipal.getPessoaLogada());
         }

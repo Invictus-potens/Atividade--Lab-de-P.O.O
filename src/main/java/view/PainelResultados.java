@@ -1,14 +1,29 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+
 import model.Partida;
-import service.SistemaGerenciador;
 
-import javax.swing.*;
-import java.awt.*;
-
-public class PainelResultados extends JPanel implements TelaPrincipal.Atualizavel {
-
-    private final SistemaGerenciador sistema = SistemaGerenciador.getInstance();
+public class PainelResultados extends JPanel {
 
     private JComboBox<Partida> cbPartida;
     private JSpinner spGolsCasa;
@@ -16,12 +31,12 @@ public class PainelResultados extends JPanel implements TelaPrincipal.Atualizave
     private JLabel lblCasa;
     private JLabel lblVisitante;
     private JLabel lblStatusPartidas;
+    private JButton btnRegistrar;
 
     public PainelResultados() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         initComponents();
-        atualizar();
     }
 
     private void initComponents() {
@@ -40,7 +55,7 @@ public class PainelResultados extends JPanel implements TelaPrincipal.Atualizave
         cbPartida = new JComboBox<>();
         cbPartida.setFont(new Font("Arial", Font.PLAIN, 13));
         cbPartida.setPreferredSize(new Dimension(500, 28));
-        cbPartida.addActionListener(e -> atualizarLabels());
+        cbPartida.addActionListener(e -> atualizarLabelsIn());
         gbc.gridx = 1; gbc.weightx = 1;
         form.add(cbPartida, gbc);
 
@@ -77,14 +92,13 @@ public class PainelResultados extends JPanel implements TelaPrincipal.Atualizave
         gbc.gridx = 1; gbc.weightx = 1;
         form.add(placarPanel, gbc);
 
-        JButton btnRegistrar = new JButton("Registrar Resultado e Calcular Pontos");
+        btnRegistrar = new JButton("Registrar Resultado e Calcular Pontos");
         btnRegistrar.setPreferredSize(new Dimension(320, 40));
         EstiloBotao.aplicarPreenchido(btnRegistrar, new Color(180, 50, 0), Color.WHITE);
         btnRegistrar.setFont(new Font("Arial", Font.BOLD, 14));
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         form.add(btnRegistrar, gbc);
-        btnRegistrar.addActionListener(e -> registrarResultado());
 
         lblStatusPartidas = new JLabel("", SwingConstants.CENTER);
         lblStatusPartidas.setFont(new Font("Arial", Font.ITALIC, 11));
@@ -118,7 +132,11 @@ public class PainelResultados extends JPanel implements TelaPrincipal.Atualizave
         add(taRegras, BorderLayout.CENTER);
     }
 
-    private void atualizarLabels() {
+    public Partida getPartidaSelecionada() {
+        return (Partida) cbPartida.getSelectedItem();
+    }
+
+    private void atualizarLabelsIn() {
         Partida partida = (Partida) cbPartida.getSelectedItem();
         if (partida != null) {
             lblCasa.setText(partida.getCasa().getNome());
@@ -129,53 +147,41 @@ public class PainelResultados extends JPanel implements TelaPrincipal.Atualizave
         }
     }
 
-    private void registrarResultado() {
-        Partida partida = (Partida) cbPartida.getSelectedItem();
-        if (partida == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Selecione uma partida!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int golsCasa = (Integer) spGolsCasa.getValue();
-        int golsVisitante = (Integer) spGolsVisitante.getValue();
-
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Confirmar o resultado abaixo?\n\n" +
-                partida.getCasa().getNome() + "  " + golsCasa +
-                "  x  " + golsVisitante + "  " + partida.getVisitante().getNome() + "\n\n" +
-                "Atenção: esta operação não pode ser desfeita!",
-                "Confirmar Resultado", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
-        if (confirm != JOptionPane.YES_OPTION) return;
-
-        try {
-            int qtdApostas = sistema.registrarResultado(partida, golsCasa, golsVisitante);
-            atualizar();
-            JOptionPane.showMessageDialog(this,
-                    "Resultado registrado com sucesso!\n\n" +
-                    "Placar: " + golsCasa + " x " + golsVisitante + "\n" +
-                    "Apostas calculadas: " + qtdApostas + "\n\n" +
-                    "Confira a classificação dos grupos na aba 'Classificação'.",
-                    "Resultado Registrado", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+    public int getGolsCasa() {
+        return (Integer) spGolsCasa.getValue();
     }
 
-    @Override
-    public void atualizar() {
-        Partida sel = (Partida) cbPartida.getSelectedItem();
+    public int getGolsVisitante() {
+        return (Integer) spGolsVisitante.getValue();
+    }
+
+    public void atualizarLabels(String casa, String visitante) {
+        lblCasa.setText(casa);
+        lblVisitante.setText(visitante);
+    }
+
+    public void atualizarListaPartidas(List<Partida> partidas) {
         cbPartida.removeAllItems();
-        sistema.getPartidasSemResultado().forEach(cbPartida::addItem);
-        if (sel != null) cbPartida.setSelectedItem(sel);
-
-        atualizarLabels();
-
-        int semResultado = sistema.getPartidasSemResultado().size();
-        int total = sistema.getPartidas().size();
-        lblStatusPartidas.setText("Partidas aguardando resultado: " + semResultado
-                + " de " + total + " total");
+        for (Partida p : partidas) {
+            cbPartida.addItem(p);
+        }
+        lblStatusPartidas.setText("Total de partidas: " + partidas.size());
     }
+
+    public void exibirMensagem(String msg, String titulo, int tipo) {
+        JOptionPane.showMessageDialog(this, msg, titulo, tipo);
+    }
+
+    public int confirmarOperacao(String msg, String titulo) {
+        return JOptionPane.showConfirmDialog(this, msg, titulo, JOptionPane.YES_NO_OPTION);
+    }
+
+    public void addListenerBtnRegistrar(java.awt.event.ActionListener l) {
+        btnRegistrar.addActionListener(l);
+    }
+
+    public void addListenerCbPartida(java.awt.event.ActionListener l) {
+        cbPartida.addActionListener(l);
+    }
+
 }
