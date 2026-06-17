@@ -5,8 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.GrupoAposta;
+import model.Usuario;
 
 public class GrupoApostaDAO {
     
@@ -38,7 +41,7 @@ public class GrupoApostaDAO {
     
     public void salvar(String nome, int criadorId) {
         String sqlGrupo = "INSERT INTO grupo_aposta (nome, criador_id) VALUES (?, ?)";
-        String sqlPartics = "INSERT INTO grupo_participantes (grupo_id, usuario_id) VALUES (?, ?)";
+        String sqlPartics = "INSERT INTO grupo_participantes (grupo_id, user_id) VALUES (?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection()) {
             conn.setAutoCommit(false); //as duas inserções vão juntas
@@ -46,7 +49,7 @@ public class GrupoApostaDAO {
             int grupoId;
             try (PreparedStatement stmtG = conn.prepareStatement(sqlGrupo, Statement.RETURN_GENERATED_KEYS)) {
                 stmtG.setString(1, nome);
-                stmtG.setInt(2, criador_id);
+                stmtG.setInt(2, criadorId);
                 stmtG.executeUpdate();
 
                 try (ResultSet rs = stmtG.getGeneratedKeys()) {
@@ -68,23 +71,87 @@ public class GrupoApostaDAO {
     } catch (SQLException e) {
         throw new RuntimeException("Erro ao salvar grupo banco: " + e.getMessage(), e);
     }
+    }
 
     public void entrarGrupo(int grupoId, int usuariosId) {
         String sqlC = "SELECT COUNT(*) FROM grupo_participante WHERE user_id = ?";
         String sqlIns = "INSERT INTO grupo_participantes (grupo_id, user_id) VALUES (?, ?)";
 
-        //Continua apartir daqui porque tem que fazer 2 try 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        //Continua apartir daqui porque tem que fazer 3 try 
+        // Maximo de 5 grupos
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            try (PreparedStatement stmtC = conn.prepareStatement(sqlC)) {
+                stmtC.setInt(1, usuariosId);
+                try (ResultSet rs = stmtC.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) >= 5) {
+                        throw new RuntimeException("Limite de 5 grupos :>");
+                    }
+                }
+            }
 
-                stmt.setString(1, grupo.getNome());
-                stmt.setInt(2, grupo.getCriador().getId());
-                stmt.executeUpdate();
+            try (PreparedStatement stmtIns = conn.prepareStatement(sqlIns)) {
+                stmtIns.setInt(1, grupoId);
+                stmtIns.setInt(2, usuariosId);
+                stmtIns.executeUpdate();
+            }
+        } catch (SQLException e) {
+            if (e.getMessage().contains("PRIMARY KEY")) {
+                throw new RuntimeException("Já está nesse grupo");
+            }
+             throw new RuntimeException("Erro ao participar do grupo: " + e.getMessage(), e);
+        }
+    }
+       
+        public List<GrupoAposta> listarTodos() {
+            List<GrupoAposta> lista = new ArrayList<>();
+            String sql = "SELECT g.id, g.nome, p.id as c_id, p.nome as c_nome, p.login as c_login, p.role as c_role " +
+            "FROM grupo_aposta g " +
+            "JOIN pessoa p ON g.criador_id = p.id";
 
-             } catch (SQLException e) {
-                throw new RuntimeException("Falha ao cadastrar grupo: " + e.getMessage(), e);
-             }
+            try (Connection conn = ConnectionFactory.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+                    while (rs.next()) {
+                        Usuario criador = new Usuario();
+                        criador.setId(rs.getInt("c_id"));
+                        criador.setNome(rs.getString("c_nome"));
+                        criador.setLogin(rs.getString("c_login"));
+                        criador.setRole(rs.getString("c_role"));
+
+                        GrupoAposta grupo = new GrupoAposta();
+                        grupo.setId(rs.getInt("id"));
+                        grupo.setNome(rs.getString("nome"));
+                        grupo.setCriador(criador);
+
+                        carregarPartic(conn, grupo);
+
+                        lista.add(grupo);
+                    }
+                } catch(SQLException e) {
+                    throw new RuntimeException("Erro lista grupo: " + e.getMessage(), e);
+                }
+            return lista;
+        }
+
+        private void carregarPartic(Connection conn, GrupoAposta grupo) throws SQLException {
+            String sql = "SELECT p.id, p.nome, p.login, p.role FROM grupo_participante gp " +
+            "JOIN pessoa p ON gp.usuario_id = p.id WHERE gp.grupo_id = ?";
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, grupo.getId());
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                    Usuario p = new Usuario();
+                    p.setId(rs.getInt("id"));
+                    p.setNome(rs.getString("nome"));
+                    p.setLogin(rs.getString("login"));
+                    p.setRole(rs.getString("role"));
+                    grupo.listar().add(p);
+                }
+                
+            }
+        }
 
     }
-}
 }

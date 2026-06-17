@@ -1,15 +1,14 @@
 package view;
 
 import model.*;
-import service.SistemaGerenciador;
 
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-public class PainelApostas extends JPanel implements TelaPrincipal.Atualizavel {
-
-    private final SistemaGerenciador sistema = SistemaGerenciador.getInstance();
+public class PainelApostas extends JPanel {
 
     private JComboBox<GrupoAposta> cbGrupo;
     private JComboBox<Partida> cbPartida;
@@ -20,12 +19,12 @@ public class PainelApostas extends JPanel implements TelaPrincipal.Atualizavel {
     private DefaultListModel<Aposta> listModel;
     private JList<Aposta> listaApostas;
     private JLabel lblInfo;
+    private JButton btnApostar;
 
     public PainelApostas() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         initComponents();
-        atualizar();
     }
 
     private void initComponents() {
@@ -47,7 +46,6 @@ public class PainelApostas extends JPanel implements TelaPrincipal.Atualizavel {
         form.add(new JLabel("Partida:"), gbc);
         cbPartida = new JComboBox<>();
         cbPartida.setFont(new Font("Arial", Font.PLAIN, 13));
-        cbPartida.addActionListener(e -> atualizarLabelsPartida());
         gbc.gridx = 1; gbc.weightx = 1;
         form.add(cbPartida, gbc);
 
@@ -78,21 +76,20 @@ public class PainelApostas extends JPanel implements TelaPrincipal.Atualizavel {
         form.add(placarPanel, gbc);
 
         JLabel lblAviso = new JLabel(
-                "<html><i>Apostas devem ser realizadas até 20 minutos antes do início da partida.</i></html>",
+                "Apostas devem ser realizadas até 20 minutos antes do início da partida.",
                 SwingConstants.CENTER);
         lblAviso.setForeground(new Color(180, 100, 0));
         lblAviso.setFont(new Font("Arial", Font.PLAIN, 11));
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
         form.add(lblAviso, gbc);
 
-        JButton btnApostar = new JButton("Registrar Aposta");
+        btnApostar = new JButton("Registrar Aposta");
         btnApostar.setPreferredSize(new Dimension(200, 36));
         EstiloBotao.aplicarPreenchido(btnApostar, new Color(0, 140, 0), Color.WHITE);
         btnApostar.setFont(new Font("Arial", Font.BOLD, 13));
         gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.CENTER;
         form.add(btnApostar, gbc);
-        btnApostar.addActionListener(e -> registrarAposta());
 
         add(form, BorderLayout.NORTH);
 
@@ -106,83 +103,49 @@ public class PainelApostas extends JPanel implements TelaPrincipal.Atualizavel {
                 BorderFactory.createEtchedBorder(), "Minhas Apostas"));
         add(scrollPane, BorderLayout.CENTER);
 
-        lblInfo = new JLabel("", SwingConstants.RIGHT);
+        lblInfo = new JLabel("Total de Apostas: 0", SwingConstants.RIGHT);
         lblInfo.setFont(new Font("Arial", Font.ITALIC, 11));
         lblInfo.setForeground(Color.GRAY);
         add(lblInfo, BorderLayout.SOUTH);
     }
 
-    private void atualizarLabelsPartida() {
-        Partida partida = (Partida) cbPartida.getSelectedItem();
-        if (partida != null) {
-            lblCasa.setText(partida.getCasa().getNome());
-            lblVisitante.setText(partida.getVisitante().getNome());
-        } else {
-            lblCasa.setText("Casa");
-            lblVisitante.setText("Visitante");
-        }
+    public GrupoAposta getGrupoSelecionado() {
+        return (GrupoAposta) cbGrupo.getSelectedItem();
     }
 
-    private void registrarAposta() {
-        Pessoa pessoa = sistema.getPessoaLogada();
-        if (!(pessoa instanceof Usuario)) {
-            JOptionPane.showMessageDialog(this,
-                    "Apenas usuários comuns podem realizar apostas!",
-                    "Acesso Negado", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        GrupoAposta grupo = (GrupoAposta) cbGrupo.getSelectedItem();
-        Partida partida = (Partida) cbPartida.getSelectedItem();
-
-        if (grupo == null || partida == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Selecione o grupo e a partida!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int golsCasa = (Integer) spGolsCasa.getValue();
-        int golsVisitante = (Integer) spGolsVisitante.getValue();
-
-        try {
-            sistema.registrarAposta((Usuario) pessoa, partida, grupo, golsCasa, golsVisitante);
-            atualizar();
-            JOptionPane.showMessageDialog(this,
-                    "Aposta registrada com sucesso!\n\n" +
-                    "Partida: " + partida.getCasa().getNome() + " vs " + partida.getVisitante().getNome() + "\n" +
-                    "Placar previsto: " + golsCasa + " x " + golsVisitante + "\n" +
-                    "Grupo: " + grupo.getNome(),
-                    "Aposta Confirmada", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro ao Registrar Aposta", JOptionPane.ERROR_MESSAGE);
-        }
+    public int getGolsCasa() {
+        return (Integer) spGolsCasa.getValue();
     }
 
-    @Override
-    public void atualizar() {
-        Pessoa pessoa = sistema.getPessoaLogada();
+    public int getGolsVisitante() {
+        return (Integer) spGolsVisitante.getValue();
+    }
 
-        GrupoAposta selGrupo = (GrupoAposta) cbGrupo.getSelectedItem();
+    public void setGrupos(List<GrupoAposta> grupos) {
         cbGrupo.removeAllItems();
-        if (pessoa instanceof Usuario) {
-            List<GrupoAposta> gruposUsuario = sistema.getGruposDoUsuario((Usuario) pessoa);
-            gruposUsuario.forEach(cbGrupo::addItem);
-        }
-        if (selGrupo != null) cbGrupo.setSelectedItem(selGrupo);
-
-        Partida selPartida = (Partida) cbPartida.getSelectedItem();
-        cbPartida.removeAllItems();
-        sistema.getPartidasDisponiveisParaAposta().forEach(cbPartida::addItem);
-        if (selPartida != null) cbPartida.setSelectedItem(selPartida);
-
-        atualizarLabelsPartida();
-
-        listModel.clear();
-        if (pessoa instanceof Usuario) {
-            List<Aposta> apostas = sistema.getApostasDoUsuario((Usuario) pessoa);
-            apostas.forEach(listModel::addElement);
-            lblInfo.setText("Total de apostas: " + apostas.size());
-        }
+        grupos.forEach(cbGrupo::addItem);
     }
+
+    public void setPartidas(List<Partida> partidas) {
+        cbPartida.removeAllItems();
+        partidas.forEach(cbPartida::addItem);
+    }
+
+    public void atualizarLabelsPlacar(String casa, String visitante) {
+        lblCasa.setText(casa != null ? casa : "casa");
+        lblVisitante.setText(visitante != null ? visitante : "Visitante");
+    }
+
+    public void exibirMensagem(String msg, String titulo, int tipo) {
+        JOptionPane.showMessageDialog(this, msg, titulo, tipo);
+    }
+
+    public void addListenerBtnApostar(ActionListener l) {btnApostar.addActionListener(l); }
+
+    public void addListenerCbPartida(ActionListener l) {cbPartida.addActionListener(l); }
+
+    public Partida getPartidaSelecionada() {
+        return (Partida) cbPartida.getSelectedItem();
+    }
+
 }

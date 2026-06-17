@@ -23,5 +23,17 @@ public class TelaPrincipalCon {
         if (this.telaPrincipal.getPainelClubes() != null) {
             new ClubeCon(this.telaPrincipal.getPainelClubes());
         }
+
+        if (this.telaPrincipal.getPainelGrupos() != null) {
+            new GrupoCon(this.telaPrincipal.getPainelGrupos(), this.telaPrincipal.getPessoaLogada());
+        }
+
+        if (this.telaPrincipal.getPainelApostas() != null) {
+            new ApostaCon(this.telaPrincipal.getPainelApostas(), this.telaPrincipal.getPessoaLogada());
+        }
+
+        if (this.telaPrincipal.getPainelGrupos() != null) {
+            GrupoCon grupoC = new GrupoCon(this.telaPrincipal.getPainelGrupos(), this.telaPrincipal.getPessoaLogada());
+        }
     }
 }

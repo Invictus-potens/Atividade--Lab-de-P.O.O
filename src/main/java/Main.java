@@ -34,7 +34,7 @@ public class Main {
 
             TelaLogin telaLogin = new TelaLogin();
 
-            LoginController loginController = new LoginController(telaLogin, gerenciador);
+            LoginController loginController = new LoginController(telaLogin);
 
             telaLogin.setVisible(true);
         });

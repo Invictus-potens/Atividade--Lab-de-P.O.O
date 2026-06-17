@@ -3,14 +3,15 @@ package view;
 import model.GrupoAposta;
 import model.Pessoa;
 import model.Usuario;
-import service.SistemaGerenciador;
 
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.ActionListener;
+import javax.swing.event.ListSelectionListener;
+import java.util.List;
 
-public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
-
-    private final SistemaGerenciador sistema = SistemaGerenciador.getInstance();
+public class PainelGrupos extends JPanel {
 
     private JTextField tfNomeGrupo;
     private JComboBox<GrupoAposta> cbGruposDisponiveis;
@@ -18,12 +19,13 @@ public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
     private JList<GrupoAposta> listaGrupos;
     private JTextArea taDetalhes;
     private JLabel lblInfo;
+    private JButton btnCriar;
+    private JButton btnEntrar;
 
     public PainelGrupos() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         initComponents();
-        atualizar();
     }
 
     private void initComponents() {
@@ -43,13 +45,11 @@ public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
         gbc.gridx = 1; gbc.weightx = 1;
         formCriar.add(tfNomeGrupo, gbc);
 
-        JButton btnCriar = new JButton("Criar Grupo");
+        btnCriar = new JButton("Criar Grupo");
         EstiloBotao.aplicarPreenchido(btnCriar, new Color(0, 140, 0), Color.WHITE);
         btnCriar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formCriar.add(btnCriar, gbc);
-        btnCriar.addActionListener(e -> criarGrupo());
-        tfNomeGrupo.addActionListener(e -> criarGrupo());
 
         northPanel.add(formCriar);
 
@@ -66,12 +66,11 @@ public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
         gbc.gridx = 1; gbc.weightx = 1;
         formEntrar.add(cbGruposDisponiveis, gbc);
 
-        JButton btnEntrar = new JButton("Entrar no Grupo");
+        btnEntrar = new JButton("Entrar no Grupo");
         EstiloBotao.aplicarPreenchido(btnEntrar, new Color(0, 100, 200), Color.WHITE);
         btnEntrar.setFont(new Font("Arial", Font.BOLD, 12));
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         formEntrar.add(btnEntrar, gbc);
-        btnEntrar.addActionListener(e -> entrarNoGrupo());
 
         northPanel.add(formEntrar);
         add(northPanel, BorderLayout.NORTH);
@@ -83,7 +82,6 @@ public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
         listaGrupos = new JList<>(listModel);
         listaGrupos.setFont(new Font("Arial", Font.PLAIN, 14));
         listaGrupos.setFixedCellHeight(28);
-        listaGrupos.addListSelectionListener(e -> mostrarDetalhes());
 
         JScrollPane scrollLista = new JScrollPane(listaGrupos);
         scrollLista.setBorder(BorderFactory.createTitledBorder(
@@ -107,95 +105,52 @@ public class PainelGrupos extends JPanel implements TelaPrincipal.Atualizavel {
         add(lblInfo, BorderLayout.SOUTH);
     }
 
-    private void criarGrupo() {
-        Pessoa pessoa = sistema.getPessoaLogada();
-        if (!(pessoa instanceof Usuario)) {
-            JOptionPane.showMessageDialog(this,
-                    "Apenas usuários comuns podem criar grupos!",
-                    "Acesso Negado", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        String nome = tfNomeGrupo.getText().trim();
-        if (nome.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Informe um nome para o grupo!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        try {
-            sistema.criarGrupo(nome, (Usuario) pessoa);
-            tfNomeGrupo.setText("");
-            atualizar();
-            JOptionPane.showMessageDialog(this,
-                    "Grupo '" + nome + "' criado com sucesso!\nVocê é o criador e já está participando.",
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+    public String getNomeGrupoDigitado() {
+        return tfNomeGrupo.getText().trim();
     }
 
-    private void entrarNoGrupo() {
-        Pessoa pessoa = sistema.getPessoaLogada();
-        if (!(pessoa instanceof Usuario)) {
-            JOptionPane.showMessageDialog(this,
-                    "Apenas usuários comuns podem participar de grupos!",
-                    "Acesso Negado", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        GrupoAposta grupo = (GrupoAposta) cbGruposDisponiveis.getSelectedItem();
-        if (grupo == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Selecione um grupo!", "Aviso", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        try {
-            sistema.entrarNoGrupo(grupo, (Usuario) pessoa);
-            atualizar();
-            mostrarDetalhes();
-            JOptionPane.showMessageDialog(this,
-                    "Você entrou no grupo '" + grupo.getNome() + "' com sucesso!",
-                    "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
+    public void limparNome() {
+        tfNomeGrupo.setText("");
     }
 
-    private void mostrarDetalhes() {
-        GrupoAposta grupo = listaGrupos.getSelectedValue();
-        if (grupo == null) {
-            taDetalhes.setText("");
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Grupo: ").append(grupo.getNome()).append("\n");
-        sb.append("Criador: ").append(grupo.getCriador().getNome()).append("\n");
-        sb.append("-".repeat(40)).append("\n");
-        sb.append("Participantes: ").append(grupo.listar().size())
-                .append(" / ").append(grupo.getTamanhoMaximo()).append("\n\n");
-
-        for (int i = 0; i < grupo.listar().size(); i++) {
-            String marcador = grupo.listar().get(i).equals(grupo.getCriador()) ? " (criador)" : "";
-            sb.append("  ").append(i + 1).append(". ")
-                    .append(grupo.listar().get(i).getNome()).append(marcador).append("\n");
-        }
-        taDetalhes.setText(sb.toString());
+    public GrupoAposta getGrupoSelecionadoCombo() {
+        return (GrupoAposta) cbGruposDisponiveis.getSelectedItem();
     }
 
-    @Override
-    public void atualizar() {
+    public GrupoAposta getGrupoSelecionadoLista() {
+        return listaGrupos.getSelectedValue();
+    }
+
+    public void setDetalheText(String texto) {
+        taDetalhes.setText(texto);
+    }
+
+    public void atualizarR(List<GrupoAposta> grupos, int totalUsuario) {
         listModel.clear();
-        sistema.getGrupos().forEach(listModel::addElement);
-
-        GrupoAposta sel = (GrupoAposta) cbGruposDisponiveis.getSelectedItem();
         cbGruposDisponiveis.removeAllItems();
-        sistema.getGrupos().forEach(cbGruposDisponiveis::addItem);
-        if (sel != null) cbGruposDisponiveis.setSelectedItem(sel);
 
-        lblInfo.setText("Total de grupos: " + sistema.getGrupos().size() + " / 5");
+        for (GrupoAposta g : grupos) {
+            listModel.addElement(g);
+            cbGruposDisponiveis.addItem(g);
+        }
+        lblInfo.setText("Seus grupos: " + totalUsuario + " /5");
     }
-}
+
+    public void exibirMensagem(String msg, String titulo, int tipo) {
+        JOptionPane.showMessageDialog(this, msg, titulo, tipo);
+    }
+
+
+    public void addListenerBtnCriar(ActionListener l) {
+        btnCriar.addActionListener(l); tfNomeGrupo.addActionListener(l);
+    }
+
+    public void addListenerBtnEntrar(ActionListener l) {
+        btnEntrar.addActionListener(l); 
+    }
+
+    public void addListenerListaSelecao(ListSelectionListener l) {
+        listaGrupos.addListSelectionListener(l); 
+    }
+
+}    
