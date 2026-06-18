@@ -40,10 +40,13 @@ public class PartidaCon {
             @Override
             public void componentShown(java.awt.event.ComponentEvent e) {
                 atualizarCampeonatos();
+                atualizarListaPartidas();
         }
+        
     });
 
     this.atualizarCampeonatos();
+    this.atualizarListaPartidas();
     }
 
     private void atualizarCampeonatos() {

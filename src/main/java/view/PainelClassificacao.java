@@ -1,21 +1,37 @@
 package view;
 
-import model.GrupoAposta;
-import model.Usuario;
-import service.SistemaGerenciador;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
-import java.util.Map;
+
+import controller.ClassificacaoCon;
+import model.Classificacao;
+import model.GrupoAposta;
 
 public class PainelClassificacao extends JPanel implements TelaPrincipal.Atualizavel {
 
-    private final SistemaGerenciador sistema = SistemaGerenciador.getInstance();
+    private ClassificacaoCon controller;
 
     private JComboBox<GrupoAposta> cbGrupo;
+    private JButton btnAtualizar;
     private DefaultTableModel tableModel;
     private JTable tabela;
     private JLabel lblTotalApostas;
@@ -25,7 +41,6 @@ public class PainelClassificacao extends JPanel implements TelaPrincipal.Atualiz
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         initComponents();
-        atualizar();
     }
 
     private void initComponents() {
@@ -37,12 +52,10 @@ public class PainelClassificacao extends JPanel implements TelaPrincipal.Atualiz
         cbGrupo = new JComboBox<>();
         cbGrupo.setPreferredSize(new Dimension(280, 28));
         cbGrupo.setFont(new Font("Arial", Font.PLAIN, 13));
-        cbGrupo.addActionListener(e -> mostrarClassificacao());
         topPanel.add(cbGrupo);
 
-        JButton btnAtualizar = new JButton("Atualizar");
+        btnAtualizar = new JButton("Atualizar");
         btnAtualizar.setFont(new Font("Arial", Font.BOLD, 12));
-        btnAtualizar.addActionListener(e -> mostrarClassificacao());
         topPanel.add(btnAtualizar);
 
         lblGrupoInfo = new JLabel("");
@@ -73,7 +86,6 @@ public class PainelClassificacao extends JPanel implements TelaPrincipal.Atualiz
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         tabela.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-
         tabela.getColumnModel().getColumn(0).setPreferredWidth(80);
         tabela.getColumnModel().getColumn(1).setPreferredWidth(300);
         tabela.getColumnModel().getColumn(2).setPreferredWidth(150);
@@ -85,24 +97,20 @@ public class PainelClassificacao extends JPanel implements TelaPrincipal.Atualiz
                 Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
                 if (!isSelected) {
                     if (row == 0) {
-                        c.setBackground(new Color(255, 215, 0, 100)); // Ouro para 1º
+                        c.setBackground(new Color(255, 215, 0, 100));
                         c.setFont(getFont().deriveFont(Font.BOLD));
                     } else if (row == 1) {
-                        c.setBackground(new Color(192, 192, 192, 80)); // Prata para 2º
+                        c.setBackground(new Color(192, 192, 192, 80));
                         c.setFont(getFont().deriveFont(Font.PLAIN));
                     } else if (row == 2) {
-                        c.setBackground(new Color(205, 127, 50, 60)); // Bronze para 3º
+                        c.setBackground(new Color(205, 127, 50, 60));
                         c.setFont(getFont().deriveFont(Font.PLAIN));
                     } else {
                         c.setBackground(Color.WHITE);
                         c.setFont(getFont().deriveFont(Font.PLAIN));
                     }
                 }
-                if (column == 0 || column == 2) {
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                } else {
-                    setHorizontalAlignment(SwingConstants.LEFT);
-                }
+                setHorizontalAlignment(column == 1 ? SwingConstants.LEFT : SwingConstants.CENTER);
                 return c;
             }
         });
@@ -120,8 +128,7 @@ public class PainelClassificacao extends JPanel implements TelaPrincipal.Atualiz
         lblTotalApostas.setForeground(Color.GRAY);
         footer.add(lblTotalApostas, BorderLayout.WEST);
 
-        JLabel lblLegenda = new JLabel(
-                "1º / 2º / 3º lugar (cores na tabela)", SwingConstants.RIGHT);
+        JLabel lblLegenda = new JLabel("1º / 2º / 3º lugar (cores na tabela)", SwingConstants.RIGHT);
         lblLegenda.setFont(new Font("Arial", Font.PLAIN, 11));
         lblLegenda.setForeground(Color.GRAY);
         footer.add(lblLegenda, BorderLayout.EAST);
@@ -129,39 +136,56 @@ public class PainelClassificacao extends JPanel implements TelaPrincipal.Atualiz
         add(footer, BorderLayout.SOUTH);
     }
 
-    private void mostrarClassificacao() {
+    public void setController(ClassificacaoCon controller) {
+        this.controller = controller;
+    }
+
+    public void setGrupos(List<GrupoAposta> grupos) {
+        GrupoAposta sel = (GrupoAposta) cbGrupo.getSelectedItem();
+        cbGrupo.removeAllItems();
+        grupos.forEach(cbGrupo::addItem);
+        if (sel != null) cbGrupo.setSelectedItem(sel);
+    }
+
+    public GrupoAposta getGrupoSelecionado() {
+        return (GrupoAposta) cbGrupo.getSelectedItem();
+    }
+
+    public void mostrarClassificacao(List<Classificacao> classificacao, GrupoAposta grupo) {
         tableModel.setRowCount(0);
-        GrupoAposta grupo = (GrupoAposta) cbGrupo.getSelectedItem();
+    for (int i = 0; i < classificacao.size(); i++) {
+        Classificacao item = classificacao.get(i);
+        tableModel.addRow(new Object[]{
+            (i + 1) + "º", 
+            item.getNomeParticipante(), 
+            item.getTotalPontos() + " pts"
+        });
+    }
+        lblGrupoInfo.setText("  |  " + grupo.listar().size() + " participante(s)  |  criado por: "
+                + grupo.getCriador().getNome());
+        lblTotalApostas.setText("Pontos de partidas encerradas. Apostas em andamento não contabilizadas.");
+    }
 
-        if (grupo == null) {
-            lblGrupoInfo.setText("Nenhum grupo selecionado.");
-            lblTotalApostas.setText("");
-            return;
-        }
+    public void limparTabela() {
+        tableModel.setRowCount(0);
+        lblGrupoInfo.setText("");
+        lblTotalApostas.setText("");
+    }
 
-        List<Map.Entry<Usuario, Integer>> classificacao = sistema.getClassificacaoGrupo(grupo);
+    public void exibirMensagem(String msg, String titulo, int tipo) {
+        JOptionPane.showMessageDialog(this, msg, titulo, tipo);
+    }
 
-        for (int i = 0; i < classificacao.size(); i++) {
-            Map.Entry<Usuario, Integer> entry = classificacao.get(i);
-            String posicao = (i + 1) + "º";
-            tableModel.addRow(new Object[]{
-                    posicao,
-                    entry.getKey().getNome(),
-                    entry.getValue() + " pts"
-            });
-        }
+    public void addListenerCbGrupo(ActionListener listener) {
+        cbGrupo.addActionListener(listener);
+    }
 
-        lblGrupoInfo.setText("  |  " + grupo.listar().size() + " participante(s)  |  criado por: " +
-                grupo.getCriador().getNome());
-        lblTotalApostas.setText("Pontos obtidos de partidas já encerradas. Apostas em andamento não contabilizadas.");
+    public void addListenerBtnAtualizar(ActionListener listener) {
+        btnAtualizar.addActionListener(listener);
     }
 
     @Override
     public void atualizar() {
-        GrupoAposta sel = (GrupoAposta) cbGrupo.getSelectedItem();
-        cbGrupo.removeAllItems();
-        sistema.getGrupos().forEach(cbGrupo::addItem);
-        if (sel != null) cbGrupo.setSelectedItem(sel);
-        mostrarClassificacao();
+        if (controller != null) controller.carregarTudo();
     }
 }

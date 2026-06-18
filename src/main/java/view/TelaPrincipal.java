@@ -26,6 +26,7 @@ public class TelaPrincipal extends JFrame {
     private final Pessoa pessoaLogada;
     private JTabbedPane tabbedPane;
 
+    private PainelClassificacao painelClassificacao;
     private PainelPartidas painelPartidas;
     private PainelResultados painelResultados;
     private PainelCampeonatos painelCampeonatos;
@@ -80,17 +81,26 @@ public class TelaPrincipal extends JFrame {
 
         if (isAdmin) {
             this.painelPartidas = new PainelPartidas();
-            tabbedPane.addTab("Partidas", painelPartidas);
+            tabbedPane.addTab("Partidas", this.painelPartidas);
+
             this.painelCampeonatos = new PainelCampeonatos();
-            tabbedPane.addTab("Campeonatos", painelCampeonatos);
+            tabbedPane.addTab("Campeonatos", this.painelCampeonatos);
+
             this.painelClubes = new PainelClubes();
-            tabbedPane.addTab("Clubes", painelClubes);
-            tabbedPane.addTab("Grupos", new PainelGrupos());
-            this.painelApostas = new PainelApostas();
-            tabbedPane.addTab("Apostas", painelApostas);
+            tabbedPane.addTab("Clubes", this.painelClubes);
+
             this.painelResultados = new PainelResultados();
-            tabbedPane.addTab("Resultados", new PainelResultados());
+            tabbedPane.addTab("Resultados", this.painelResultados);
         }
+
+        this.painelGrupos = new PainelGrupos();
+        tabbedPane.addTab("Grupos", this.painelGrupos);
+        
+        this.painelApostas = new PainelApostas();
+        tabbedPane.addTab("Apostas", this.painelApostas);
+
+        this.painelClassificacao = new PainelClassificacao();
+        tabbedPane.addTab("Classificação", this.painelClassificacao);
 
         tabbedPane.addChangeListener(e -> {
             Component painel = tabbedPane.getSelectedComponent();
@@ -146,6 +156,10 @@ public class TelaPrincipal extends JFrame {
     }
 
     public PainelResultados getPainelResultados() {
-        return painelResultados;
+        return this.painelResultados;
+    }
+
+    public PainelClassificacao getPainelClassificacao() {
+        return painelClassificacao;
     }
 }

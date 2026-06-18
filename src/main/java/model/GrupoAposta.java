@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import interfaces.Gerenciavel;
@@ -13,7 +12,7 @@ public class GrupoAposta implements Gerenciavel<Usuario> {
     private int id;
     private String nome;
     private Usuario criador;
-    private List<Usuario> participantes;
+    private List<Usuario> participantes = new ArrayList<>();
 
     public GrupoAposta() {
         this.participantes = new ArrayList<>();
@@ -39,7 +38,7 @@ public class GrupoAposta implements Gerenciavel<Usuario> {
 
     @Override
     public List<Usuario> listar() {
-        return Collections.unmodifiableList(participantes);
+        return participantes;
     }
 
     @Override

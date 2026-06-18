@@ -122,6 +122,10 @@ public class PainelPartidas extends JPanel {
     }
 
     public Date getDataHora() {
+        try {
+            spDataHora.commitEdit();
+        } catch (Exception e) {
+        }
         return (Date) spDataHora.getValue();
     }
 

@@ -74,7 +74,7 @@ public class GrupoApostaDAO {
     }
 
     public void entrarGrupo(int grupoId, int usuariosId) {
-        String sqlC = "SELECT COUNT(*) FROM grupo_participante WHERE user_id = ?";
+        String sqlC = "SELECT COUNT(*) FROM grupo_participantes WHERE user_id = ?";
         String sqlIns = "INSERT INTO grupo_participantes (grupo_id, user_id) VALUES (?, ?)";
 
         //Continua apartir daqui porque tem que fazer 3 try 
@@ -134,8 +134,8 @@ public class GrupoApostaDAO {
         }
 
         private void carregarPartic(Connection conn, GrupoAposta grupo) throws SQLException {
-            String sql = "SELECT p.id, p.nome, p.login, p.role FROM grupo_participante gp " +
-            "JOIN pessoa p ON gp.usuario_id = p.id WHERE gp.grupo_id = ?";
+            String sql = "SELECT p.id, p.nome, p.login, p.role FROM grupo_participantes gp " +
+            "JOIN pessoa p ON gp.user_id = p.id WHERE gp.grupo_id = ?";
 
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, grupo.getId());

@@ -78,10 +78,6 @@ public class Aposta implements Pontuavel {
 
     @Override
     public String toString() {
-        String nomeCasa = partida.getCasa().getNome();
-        String nomeVisitante = partida.getVisitante().getNome();
-        String status = calculada ? " → " + pontos + " pts" : " [Aguardando resultado]";
-        return nomeCasa + " " + golsCasaApostado + " x " + golsVisitanteApostado + " " + nomeVisitante
-                + " | Grupo: " + grupo.getNome() + status;
+        return "Aposta: " + getGolsCasaApostado() + " x " + getGolsVisitante();
     }
 }

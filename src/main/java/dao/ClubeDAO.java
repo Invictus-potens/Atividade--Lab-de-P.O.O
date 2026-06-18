@@ -25,9 +25,6 @@ public class ClubeDAO {
         }
     }
 
-    /**
-     * DML responsável por injetar o estado do objeto no SGBD.
-     */
     public void cadastrar(Clube clube) {
         String sql = "INSERT INTO clube (nome, cidade) VALUES (?, ?)";
 

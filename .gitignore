@@ -1,0 +1,17 @@
+# Ignora a pasta de build do Maven
+target/
+
+# Ignora os arquivos compilados soltos (se houver)
+*.class
+
+# Ignora o banco de dados do SQLite
+*.db
+*.sqlite
+
+# Ignora configurações específicas das IDEs (VS Code, Eclipse, IntelliJ)
+.vscode/
+.settings/
+.classpath
+.project
+.idea/
+*.iml

@@ -7,7 +7,6 @@ import javax.swing.JOptionPane;
 import dao.GrupoApostaDAO;
 import model.GrupoAposta;
 import model.Pessoa;
-import view.PainelApostas;
 import view.PainelGrupos;
 
 public class GrupoCon {
@@ -57,7 +56,7 @@ public class GrupoCon {
 
             view.atualizarR(todosGrupos, contadorUser);
         } catch (Exception e) {
-            view.exibirMensagem("Erro grupos", "erro", JOptionPane.ERROR_MESSAGE);
+            view.exibirMensagem("Erro grupos: " + e.getMessage(), "erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -68,7 +67,7 @@ public class GrupoCon {
         }
 
         String nome = view.getNomeGrupoDigitado();
-        if (nome.isEmpty()) {
+        if (nome == null || nome.trim().isEmpty()) {
             view.exibirMensagem("Insira um nome", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -77,7 +76,7 @@ public class GrupoCon {
             grupoDao.salvar(nome, pessoaLogada.getId());
             view.limparNome();
             renderizarDadosTela();
-            view.exibirMensagem("Grupo " + nome + "criado e registrado no banco", "Sucess", JOptionPane.INFORMATION_MESSAGE);
+            view.exibirMensagem("Grupo " + nome + " criado e registrado no banco", "Sucess", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             view.exibirMensagem("Erro ao criar grupo: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }

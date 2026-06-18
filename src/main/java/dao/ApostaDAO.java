@@ -1,19 +1,18 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Aposta;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class ApostaDAO {
     
-    public void createTableSeNaoExixtir() {
+    public void createTableSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS aposta (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " + 
                     "user_id INTEGER NOT NULL , " +
@@ -81,6 +80,31 @@ public class ApostaDAO {
     }
     return lista;
     }
+
+    public List<Aposta> listarApostasDoUsuario(int userId) {
+    List<Aposta> lista = new ArrayList<>();
+    String sql = "SELECT a.*, p.casa_id, p.visitante_id " +
+                 "FROM aposta a " +
+                 "JOIN partida p ON a.partida_id = p.id " +
+                 "WHERE a.user_id = ?";
+
+    try (Connection conn = ConnectionFactory.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, userId);
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Aposta a = new Aposta();
+                a.setId(rs.getInt("id"));
+                a.setGolsCasaApostado(rs.getInt("gols_casa"));
+                a.setGolsVisitante(rs.getInt("gols_visitante"));
+                lista.add(a);
+            }
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Erro ao buscar apostas: " + e.getMessage(), e);
+    }
+    return lista;
+}
 
     public void salvarPontos(int apostaId, int points) {
         String sql= "UPDATE aposta SET pontos = ? WHERE id = ?";

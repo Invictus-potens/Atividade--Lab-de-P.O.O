@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 
 import dao.ApostaDAO;
 import dao.GrupoApostaDAO;
+import dao.PartidaDAO;
 import model.GrupoAposta;
 import model.Partida;
 import model.Pessoa;
@@ -18,12 +19,13 @@ public class ApostaCon {
     private Pessoa pessoaLogada;
     private ApostaDAO apostaDao;
     private GrupoApostaDAO grupoDao;
-
+    private PartidaDAO partidaDao;
     public ApostaCon(PainelApostas view, Pessoa pessoaLogada) {
         this.view = view;
         this.pessoaLogada = pessoaLogada;
         this.apostaDao = new ApostaDAO();
         this.grupoDao = new GrupoApostaDAO();
+        this.partidaDao = new dao.PartidaDAO();
 
         this.initController();
     }
@@ -38,10 +40,9 @@ public class ApostaCon {
             }
         });
 
-        this.view.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentShown(java.awt.event.ComponentEvent e) {
-                carregarDadosTela();
+        this.view.addHierarchyListener(e -> {
+            if (view.isShowing()) {
+                carregarDadosTela(); 
             }
         });
 
@@ -51,13 +52,25 @@ public class ApostaCon {
     public void carregarDadosTela() {
         try {
             List<GrupoAposta> todosGrupos = grupoDao.listarTodos();
+        
+        if (pessoaLogada.getRole().equalsIgnoreCase("Administrador") || 
+            pessoaLogada.getRole().equalsIgnoreCase("Administrator")) {
+            view.setGrupos(todosGrupos);
+        } else {
             List<GrupoAposta> gruposUser = new ArrayList<>();
             for (GrupoAposta g : todosGrupos) {
-                if (g.listar().contains(pessoaLogada)) {
-                    gruposUser.add(g);
+                for(model.Usuario u : g.listar()) {
+                    if(u.getId() == pessoaLogada.getId()) {
+                        gruposUser.add(g);
+                        break;
+                    }
                 }
             }
             view.setGrupos(gruposUser);
+        }
+
+        view.setPartidas(partidaDao.listarTodas());
+        view.setApostas(apostaDao.listarApostasDoUsuario(pessoaLogada.getId()));
         } catch (Exception e) {
             view.exibirMensagem("Erro dados " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -87,6 +100,8 @@ public class ApostaCon {
 
         try {
             apostaDao.registrar(pessoaLogada.getId(), grupo.getId(), partida.getId(), golsCasa, golsVisitante);
+
+            carregarDadosTela();
             view.exibirMensagem("Aposta registrada no banco", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             view.exibirMensagem(ex.getMessage(), "Erro aposta", JOptionPane.ERROR_MESSAGE);

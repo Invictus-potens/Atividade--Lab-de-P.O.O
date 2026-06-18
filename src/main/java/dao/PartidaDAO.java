@@ -57,7 +57,7 @@ public class PartidaDAO {
         }
         
         public void cadastrar(Partida partida) {
-            String sql = "INSERT INTO partida (campeonato_id, casa_id, visitante_id, data_hora) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO partida (campeonato_id, casa_id, visitante_id, data_hora, resultado_def) VALUES (?, ?, ?, ?, 0)";
 
             try (Connection conn = ConnectionFactory.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -76,7 +76,7 @@ public class PartidaDAO {
         public List<Partida> listarTodas() {
             List<Partida> lista = new ArrayList<>();
 
-            String sql = "SELECT p.id, p.data_hora, " +
+            String sql = "SELECT p.id, p.data_hora, p.resultado_def, " +
                         "c.id AS camp_id, c.nome AS camp_nome, " +
                         "casa.id AS casa_id, casa.nome AS casa_nome, " +
                         "visi.id AS visi_id, visi.nome AS visi_nome " +
@@ -84,7 +84,7 @@ public class PartidaDAO {
                         "JOIN campeonato c ON p.campeonato_id = c.id " +
                         "JOIN clube casa ON p.casa_id = casa.id " +
                         "JOIN clube visi ON p.visitante_id = visi.id " +
-                        "WHERE p.resultado_def = 0";
+                        "WHERE p.resultado_def = 0 OR p.resultado_def IS NULL";
                         
                         try (Connection conn = ConnectionFactory.getConnection();
                             Statement stmt = conn.createStatement();
@@ -108,9 +108,13 @@ public class PartidaDAO {
                                     Partida partida = new Partida(casa, visitante, dataHora, camp);
                                     partida.setId(rs.getInt("id"));
 
+                                    if (rs.getInt("resultado_def") == 1) {
+                                    partida.setResultado(new model.ResultadoPartida(0, 0)); 
+                                    }
+
                                     lista.add(partida);
                                 }
-                            } catch (SQLException e) {
+                            } catch (Exception e) {
                                 throw new RuntimeException("Erro ao listar as partidas: " + e.getMessage(), e);
                             }
                             return lista;

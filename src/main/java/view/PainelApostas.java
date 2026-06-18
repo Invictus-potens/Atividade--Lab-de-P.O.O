@@ -1,12 +1,32 @@
 package view;
 
-import model.*;
-
-import javax.swing.*;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+
+import model.Aposta;
+import model.GrupoAposta;
+import model.Partida;
 
 public class PainelApostas extends JPanel {
 
@@ -126,10 +146,23 @@ public class PainelApostas extends JPanel {
         grupos.forEach(cbGrupo::addItem);
     }
 
-    public void setPartidas(List<Partida> partidas) {
+    public void setPartidas(java.util.List<model.Partida> partidas) {
         cbPartida.removeAllItems();
-        partidas.forEach(cbPartida::addItem);
+        if (partidas != null) {
+            for (model.Partida p : partidas) {
+                cbPartida.addItem(p);
+            }
+        }
     }
+
+    public void setApostas(List<Aposta> apostas) {
+    listModel.clear();  
+    System.out.println("DEBUG: AS " + apostas.size() + " apostas para exibir.");
+    for (Aposta a : apostas) {
+        listModel.addElement(a); 
+    }
+    lblInfo.setText("Total de Apostas: " + apostas.size());
+}
 
     public void atualizarLabelsPlacar(String casa, String visitante) {
         lblCasa.setText(casa != null ? casa : "casa");

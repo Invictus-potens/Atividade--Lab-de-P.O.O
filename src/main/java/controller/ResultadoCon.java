@@ -35,16 +35,11 @@ public class ResultadoCon {
             }
         });
 
-        this.view.addAncestorListener(new javax.swing.event.AncestorListener() {
+        this.view.addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
-            public void ancestorAdded(javax.swing.event.AncestorEvent event) {
+            public void componentShown(java.awt.event.ComponentEvent e) {
                 carregarPartidas();
             }
-            @Override
-            public void ancestorRemoved(javax.swing.event.AncestorEvent event) {}
-            
-            @Override
-            public void ancestorMoved(javax.swing.event.AncestorEvent event) {}
         });
 
         this.carregarPartidas();
