@@ -24,6 +24,7 @@ public class Partida {
         this.resultado = null;
     }
 
+    //Regra de negócio - só pode apostar até 20 min antes da dataHora
     public boolean podeApostar() {
         return LocalDateTime.now().isBefore(dataHora.minusMinutes(20));
     }

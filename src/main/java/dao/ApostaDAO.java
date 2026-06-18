@@ -12,6 +12,7 @@ import model.Aposta;
 
 public class ApostaDAO {
     
+    //A maioria dos daos possui esse método para criar a tabela quando o sistema for iniciado
     public void createTableSeNaoExistir() {
         String sql = "CREATE TABLE IF NOT EXISTS aposta (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " + 
@@ -34,6 +35,9 @@ public class ApostaDAO {
         }
     }
 
+    //PreparedStatement sql dinâmica e Statement fixa
+    //Connection conn abre um túnel para a comunicação que permite os comandos sql trafegarem
+    //JDBC é a API padrão java para comunicação com os bancos. A classe criada ConnectionFactory centraliza no método getConnection() queconstroi e entrega a conexão
     public void registrar(int userId, int grupoId, int partidaId, int golsCasa, int golsVisi) {
         String sql = "INSERT INTO aposta (user_id, grupo_id, partida_id, gols_casa, gols_visitante) VALUES (?, ?, ?, ?, ?);";
 

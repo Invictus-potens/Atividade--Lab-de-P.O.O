@@ -2,7 +2,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import controller.LoginController;
-import service.SistemaGerenciador;
 import view.TelaLogin;
 
 
@@ -18,7 +17,7 @@ public class Main {
             } catch (Exception e) {
                 System.err.println("Não foi possível aplicar o look and feel do sistema: " + e.getMessage());
             }
-
+            
             try {
                 new dao.ClubeDAO().createTableSeNaoExistir();
                 new dao.CampeonatoDAO().createTableSeNaoExistir();
@@ -30,8 +29,6 @@ public class Main {
             } catch (Exception e) {
                 System.err.println("Erro crítico ao inicializar o banco de dados: " + e.getMessage());
             }
-
-            SistemaGerenciador gerenciador = SistemaGerenciador.getInstance();
 
             TelaLogin telaLogin = new TelaLogin();
 

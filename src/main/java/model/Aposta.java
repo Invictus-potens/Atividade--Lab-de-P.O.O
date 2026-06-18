@@ -2,6 +2,7 @@ package model;
 
 import interfaces.Pontuavel;
 
+//Única class que implementa a interface pois calcula os pontos, é possível somente colocar os dois métodos. Mas caso fosse colocar outra class que utiliza o calculo de pontos como desafio de equipes de aposta é só implementar 
 public class Aposta implements Pontuavel {
 
     private int id;

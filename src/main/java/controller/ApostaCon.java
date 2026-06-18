@@ -20,6 +20,8 @@ public class ApostaCon {
     private ApostaDAO apostaDao;
     private GrupoApostaDAO grupoDao;
     private PartidaDAO partidaDao;
+
+    //parâmetros view e pessoa logada precisam ser passados ao construtor, enquanto o dao são instanciados para usar as funções presentes
     public ApostaCon(PainelApostas view, Pessoa pessoaLogada) {
         this.view = view;
         this.pessoaLogada = pessoaLogada;
@@ -31,6 +33,7 @@ public class ApostaCon {
     }
 
     private void initController() {
+        //Função lambda ou anônima sem retorno para simplificar o código, recebe e para então usar o método assim que o botão for pressionado
         this.view.addListenerBtnApostar(e -> processarAposta());
 
         this.view.addListenerCbPartida(e -> {
@@ -40,6 +43,7 @@ public class ApostaCon {
             }
         });
 
+        //listener para monitorar alterações na view, sendo o que funcionou em relação ao outros listeners
         this.view.addHierarchyListener(e -> {
             if (view.isShowing()) {
                 carregarDadosTela(); 
@@ -53,6 +57,8 @@ public class ApostaCon {
         try {
             List<GrupoAposta> todosGrupos = grupoDao.listarTodos();
         
+        //Escrevi de duas formas caso mudar a role
+        //coleção ordenada e sequencial de elementos com list e não armazer itens duplicados com array
         if (pessoaLogada.getRole().equalsIgnoreCase("Administrador") || 
             pessoaLogada.getRole().equalsIgnoreCase("Administrator")) {
             view.setGrupos(todosGrupos);
@@ -68,6 +74,7 @@ public class ApostaCon {
             }
             view.setGrupos(gruposUser);
         }
+        //Cria a lista vazia no carregarDadosTela, for-each cada user lista grupos e se o id for igual adiciona 
 
         view.setPartidas(partidaDao.listarTodas());
         view.setApostas(apostaDao.listarApostasDoUsuario(pessoaLogada.getId()));
@@ -91,7 +98,7 @@ public class ApostaCon {
         }
 
         if (!partida.podeApostar()) {
-            view.exibirMensagem("Aposta encerrada faz o L", "Aviso", JOptionPane.WARNING_MESSAGE);
+            view.exibirMensagem("Só pode apostar até 20 minutos antes do início da partida. (Aposta encerrada faz o L)", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

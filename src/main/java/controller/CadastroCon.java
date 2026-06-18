@@ -24,6 +24,7 @@ public class CadastroCon {
         this.telaCadastro.adicionarListenerVoltar(e -> voltarLogin());
     }
 
+    //declara as variáveis e invoca os métodos getters do objeto além de validar erros
     private void processarCadastro() {
         String nome = telaCadastro.getNomeDigitado();
         String login = telaCadastro.getLoginDigitado();

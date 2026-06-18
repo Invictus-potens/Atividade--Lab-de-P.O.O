@@ -11,6 +11,7 @@ import model.Classificacao;
 
 public class ClassificacaoDAO {
 
+    //Não precisa ser inincializada no main pois não representa uma entidade apenas soma 
     public List<Classificacao> listarPorGrupo(int grupoId) {
         String sql = "SELECT p.nome, SUM(a.pontos) as total_pontos " +
                      "FROM aposta a " +
